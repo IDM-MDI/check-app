@@ -5,5 +5,5 @@ import ru.clevertec.test.checkapp.model.CheckModel;
 
 @Service
 public interface CheckService {
-    CheckModel getCheck();
+    CheckModel getCheck(String queryString);
 }
