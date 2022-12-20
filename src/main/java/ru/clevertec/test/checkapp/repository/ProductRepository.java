@@ -6,4 +6,5 @@ import ru.clevertec.test.checkapp.entity.Product;
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product,Long> {
+    boolean existsProductByName(String name);
 }

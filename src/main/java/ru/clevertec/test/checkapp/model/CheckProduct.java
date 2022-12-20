@@ -3,6 +3,7 @@ package ru.clevertec.test.checkapp.model;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Data
 @Builder
@@ -12,9 +13,8 @@ import java.math.BigDecimal;
 @Setter
 @EqualsAndHashCode
 @ToString
-public class ProductModel {
-    private long id;
-    private String name;
-    private boolean isOnStack;
-    private BigDecimal price;
+public class CheckProduct {
+    private List<ProductModel> products;
+    private int count;
+    private BigDecimal totalPrice;
 }

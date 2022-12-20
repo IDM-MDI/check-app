@@ -11,4 +11,7 @@ import lombok.*;
 @EqualsAndHashCode
 @ToString
 public class DiscountCardModel {
+    private long id;
+    private int number;
+    private int discount;
 }

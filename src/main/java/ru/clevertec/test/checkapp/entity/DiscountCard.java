@@ -2,9 +2,17 @@ package ru.clevertec.test.checkapp.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.Builder;
 
 @Entity
 @Table(name = "`discount_card`")
@@ -17,7 +25,10 @@ import lombok.*;
 @ToString
 public class DiscountCard {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "number")
-    private Integer number;
+    @Column(name = "number", unique = true)
+    private int number;
+    @Column(name = "discount")
+    private int discount;
 }

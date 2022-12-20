@@ -15,8 +15,9 @@ import java.util.Set;
 @EqualsAndHashCode
 @ToString
 public class CheckModel {
-    private Set<ProductModel> products;
+    private Set<CheckProduct> elements;
     private DiscountCardModel discountCard;
+    private BigDecimal totalPriceWithoutCard;
     private BigDecimal totalPrice;
     private LocalDateTime createdTime = LocalDateTime.now();
 }
