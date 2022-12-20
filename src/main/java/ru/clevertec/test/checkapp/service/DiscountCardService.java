@@ -7,6 +7,7 @@ import ru.clevertec.test.checkapp.model.DiscountCardModel;
 @Service
 public interface DiscountCardService {
     DiscountCardModel findByID(long id) throws ServiceException;
+    DiscountCardModel findByNumber(int number) throws ServiceException;
     DiscountCardModel save(DiscountCardModel model) throws ServiceException;
     void delete(long id) throws ServiceException;
 }

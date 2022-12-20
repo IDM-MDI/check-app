@@ -11,7 +11,6 @@ public class CheckServiceImpl implements CheckService {
     public CheckModel getCheck(String queryString) {
         List<Long> productIds = RequestParameterUtil.findProducts(queryString);
         int number = RequestParameterUtil.findDiscountCardNumber(queryString);
-
         return null;
     }
 }

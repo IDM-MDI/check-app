@@ -12,6 +12,7 @@ import static ru.clevertec.test.checkapp.exception.ExceptionCode.ENTITY_ALREADY_
 import static ru.clevertec.test.checkapp.exception.ExceptionCode.ENTITY_NOT_FOUND;
 import static ru.clevertec.test.checkapp.exception.ExceptionCode.ENTITY_NOT_VALID;
 import static ru.clevertec.test.checkapp.validator.DiscountCardValidator.isDiscountCardValid;
+import static ru.clevertec.test.checkapp.validator.DiscountCardValidator.isNumberValid;
 
 public class DiscountCardServiceImpl implements DiscountCardService {
     private final DiscountCardRepository repository;
@@ -28,6 +29,15 @@ public class DiscountCardServiceImpl implements DiscountCardService {
         return modelMapper.toModel(repository.findById(id)
                 .orElseThrow(() -> new ServiceException(ENTITY_NOT_FOUND.toString())));
     }
+
+    @Override
+    public DiscountCardModel findByNumber(int number) throws ServiceException {
+        if(!isNumberValid(number)) {
+            throw new ServiceException(ENTITY_NOT_FOUND.toString());
+        }
+        return modelMapper.toModel(repository.findDiscountCardByNumber(number));
+    }
+
     @Override
     public DiscountCardModel save(DiscountCardModel model) throws ServiceException {
         beforeSaveValidating(model);

@@ -7,10 +7,15 @@ import ru.clevertec.test.checkapp.model.ProductModel;
 import ru.clevertec.test.checkapp.repository.ProductRepository;
 import ru.clevertec.test.checkapp.service.ProductService;
 import ru.clevertec.test.checkapp.util.impl.ProductModelMapper;
+import ru.clevertec.test.checkapp.validator.ListValidator;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static ru.clevertec.test.checkapp.exception.ExceptionCode.ENTITY_ALREADY_EXIST;
 import static ru.clevertec.test.checkapp.exception.ExceptionCode.ENTITY_NOT_FOUND;
 import static ru.clevertec.test.checkapp.exception.ExceptionCode.ENTITY_NOT_VALID;
+import static ru.clevertec.test.checkapp.exception.ExceptionCode.ID_LIST_IS_EMPTY;
 import static ru.clevertec.test.checkapp.validator.ProductValidator.isProductValid;
 
 
@@ -43,6 +48,23 @@ public class ProductServiceImpl implements ProductService {
         }
         repository.deleteById(id);
     }
+
+    @Override
+    public List<ProductModel> findByID(List<Long> ids) throws ServiceException {
+        if(ListValidator.isListEmpty(ids)) {
+            throw new ServiceException(ID_LIST_IS_EMPTY.toString());
+        }
+        return findProducts(ids);
+    }
+
+    private List<ProductModel> findProducts(List<Long> ids) throws ServiceException {
+        List<ProductModel> products = new ArrayList<>();
+        for (Long id : ids) {
+            products.add(findByID(id));
+        }
+        return products;
+    }
+
     private void beforeSaveValidating(ProductModel model) throws ServiceException {
         if(!isProductValid(model)) {
             throw new ServiceException(ENTITY_NOT_VALID.toString());
