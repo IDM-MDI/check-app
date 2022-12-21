@@ -1,5 +1,6 @@
 package ru.clevertec.test.checkapp.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,6 +19,7 @@ import lombok.ToString;
 @EqualsAndHashCode
 @ToString
 public class DiscountCardModel {
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private long id;
     private int number;
     private int discount;

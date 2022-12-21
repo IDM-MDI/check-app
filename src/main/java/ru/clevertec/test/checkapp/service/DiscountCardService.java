@@ -1,10 +1,8 @@
 package ru.clevertec.test.checkapp.service;
 
-import org.springframework.stereotype.Service;
 import ru.clevertec.test.checkapp.exception.ServiceException;
 import ru.clevertec.test.checkapp.model.DiscountCardModel;
 
-@Service
 public interface DiscountCardService {
     DiscountCardModel findByID(long id) throws ServiceException;
     DiscountCardModel findByNumber(int number) throws ServiceException;

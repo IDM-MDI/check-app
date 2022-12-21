@@ -1,5 +1,6 @@
 package ru.clevertec.test.checkapp.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,8 +21,9 @@ import java.math.BigDecimal;
 @EqualsAndHashCode
 @ToString
 public class ProductModel {
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private long id;
     private String name;
-    private boolean isOnStack;
-    private BigDecimal price;
+    private boolean isOnOffer;
+    private double price;
 }

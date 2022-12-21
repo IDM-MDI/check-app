@@ -24,7 +24,7 @@ import java.util.Set;
 public class CheckModel {
     private Set<CheckProduct> elements;
     private DiscountCardModel discountCard;
-    private BigDecimal totalPriceWithoutCard;
-    private BigDecimal totalPrice;
+    private double totalPriceWithoutCard;
+    private double totalPrice;
     private LocalDateTime createdTime = LocalDateTime.now();
 }

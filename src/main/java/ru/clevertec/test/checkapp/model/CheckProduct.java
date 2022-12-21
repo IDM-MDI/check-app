@@ -10,7 +10,6 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 @Data
 @Builder
@@ -21,7 +20,7 @@ import java.util.List;
 @EqualsAndHashCode
 @ToString
 public class CheckProduct {
-    private List<ProductModel> products;
+    private ProductModel product;
     private int count;
-    private BigDecimal totalPrice;
+    private double totalPrice;
 }

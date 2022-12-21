@@ -5,6 +5,7 @@ import ru.clevertec.test.checkapp.entity.Product;
 import ru.clevertec.test.checkapp.model.ProductModel;
 import ru.clevertec.test.checkapp.util.ModelMapper;
 
+import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 
@@ -17,8 +18,8 @@ public class ProductModelMapper implements ModelMapper<Product, ProductModel> {
                 Product.builder()
                         .id(model.getId())
                         .name(model.getName())
-                        .price(model.getPrice())
-                        .isOnStack(model.isOnStack())
+                        .price(BigDecimal.valueOf(model.getPrice()))
+                        .isOnOffer(model.isOnOffer())
                         .build();
     }
 
@@ -27,9 +28,9 @@ public class ProductModelMapper implements ModelMapper<Product, ProductModel> {
         return entity == null ? null :
                 ProductModel.builder()
                         .id(entity.getId())
-                        .name(entity.getName())
-                        .price(entity.getPrice())
-                        .isOnStack(entity.isOnStack())
+                        .name(entity.getName()  )
+                        .price(entity.getPrice().doubleValue())
+                        .isOnOffer(entity.isOnOffer())
                         .build();
     }
 

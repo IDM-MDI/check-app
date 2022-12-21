@@ -1,6 +1,7 @@
 package ru.clevertec.test.checkapp.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import ru.clevertec.test.checkapp.entity.DiscountCard;
 import ru.clevertec.test.checkapp.exception.ServiceException;
 import ru.clevertec.test.checkapp.model.DiscountCardModel;
@@ -13,7 +14,9 @@ import static ru.clevertec.test.checkapp.exception.ExceptionCode.ENTITY_NOT_FOUN
 import static ru.clevertec.test.checkapp.exception.ExceptionCode.ENTITY_NOT_VALID;
 import static ru.clevertec.test.checkapp.validator.DiscountCardValidator.isDiscountCardValid;
 import static ru.clevertec.test.checkapp.validator.DiscountCardValidator.isNumberValid;
+import static ru.clevertec.test.checkapp.validator.DiscountCardValidator.isNumberZero;
 
+@Service
 public class DiscountCardServiceImpl implements DiscountCardService {
     private final DiscountCardRepository repository;
     private final DiscountCardModelMapper modelMapper;
@@ -32,7 +35,9 @@ public class DiscountCardServiceImpl implements DiscountCardService {
 
     @Override
     public DiscountCardModel findByNumber(int number) throws ServiceException {
-        if(!isNumberValid(number)) {
+        if(isNumberZero(number)) {
+            return null;
+        } else if(!isNumberValid(number)) {
             throw new ServiceException(ENTITY_NOT_FOUND.toString());
         }
         return modelMapper.toModel(repository.findDiscountCardByNumber(number));
@@ -54,7 +59,6 @@ public class DiscountCardServiceImpl implements DiscountCardService {
     }
 
     private void beforeSaveValidating(DiscountCardModel model) throws ServiceException {
-        model.setId(0);
         if(!isDiscountCardValid(model)) {
             throw new ServiceException(ENTITY_NOT_VALID.toString());
         } else if(repository.existsDiscountCardByNumber(model.getNumber())) {

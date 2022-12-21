@@ -14,14 +14,13 @@ public class ProductValidator {
                 isPriceValid(model.getPrice());
     }
 
-    public static boolean isPriceValid(BigDecimal price) {
-        return Objects.nonNull(price) &&
-                price.intValue() > 0;
+    public static boolean isPriceValid(double price) {
+        return price > 0;
     }
 
     public static boolean isNameValid(String name) {
         return Objects.nonNull(name) &&
-                name.isBlank() &&
+                !name.isBlank() &&
                 name.length() > 1;
     }
 }

@@ -27,11 +27,12 @@ import lombok.Builder;
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
     @Column(name = "name", unique = true)
     private String name;
     @Column(name = "price")
     private BigDecimal price;
-    @Column(name = "isOnStack")
-    private boolean isOnStack;
+    @Column(name = "is_on_offer")
+    private boolean isOnOffer;
 }

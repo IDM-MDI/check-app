@@ -14,6 +14,9 @@ public class DiscountCardValidator {
     public static boolean isNumberValid(int number) {
         return number > 0;
     }
+    public static boolean isNumberZero(int number) {
+        return number == 0;
+    }
     public static boolean isDiscountValid(int discount) {
         return discount > 0 && discount <= 100;
     }

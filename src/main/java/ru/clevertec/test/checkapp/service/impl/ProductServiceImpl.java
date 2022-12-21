@@ -1,6 +1,7 @@
 package ru.clevertec.test.checkapp.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import ru.clevertec.test.checkapp.entity.Product;
 import ru.clevertec.test.checkapp.exception.ServiceException;
 import ru.clevertec.test.checkapp.model.ProductModel;
@@ -19,6 +20,7 @@ import static ru.clevertec.test.checkapp.exception.ExceptionCode.ID_LIST_IS_EMPT
 import static ru.clevertec.test.checkapp.validator.ProductValidator.isProductValid;
 
 
+@Service
 public class ProductServiceImpl implements ProductService {
     private final ProductRepository repository;
     private final ProductModelMapper modelMapper;

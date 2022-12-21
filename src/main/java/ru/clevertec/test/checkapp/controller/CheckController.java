@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import ru.clevertec.test.checkapp.exception.ServiceException;
 import ru.clevertec.test.checkapp.model.CheckModel;
 import ru.clevertec.test.checkapp.service.CheckService;
 
@@ -19,7 +20,7 @@ public class CheckController {
     }
 
     @GetMapping
-    public CheckModel buyProduct(HttpServletRequest request) {
+    public CheckModel buyProduct(HttpServletRequest request) throws ServiceException {
         return service.getCheck(request.getQueryString());
     }
 }
