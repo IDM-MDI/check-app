@@ -19,7 +19,7 @@ public class ProductModelMapper implements ModelMapper<Product, ProductModel> {
                         .id(model.getId())
                         .name(model.getName())
                         .price(BigDecimal.valueOf(model.getPrice()))
-                        .isOnOffer(model.isOnOffer())
+                        .isOnOffer(model.isOffer())
                         .build();
     }
 
@@ -30,13 +30,13 @@ public class ProductModelMapper implements ModelMapper<Product, ProductModel> {
                         .id(entity.getId())
                         .name(entity.getName()  )
                         .price(entity.getPrice().doubleValue())
-                        .isOnOffer(entity.isOnOffer())
+                        .offer(entity.isOnOffer())
                         .build();
     }
 
     @Override
     public List<Product> toEntityList(List<ProductModel> modelList) {
-        if(modelList == null || modelList.size() < 1) {
+        if(modelList == null || modelList.isEmpty()) {
             return Collections.emptyList();
         }
         return modelList.stream()
@@ -46,7 +46,7 @@ public class ProductModelMapper implements ModelMapper<Product, ProductModel> {
 
     @Override
     public List<ProductModel> toModelList(List<Product> entityList) {
-        if(entityList == null || entityList.size() < 1) {
+        if(entityList == null || entityList.isEmpty()) {
             return Collections.emptyList();
         }
         return entityList.stream()

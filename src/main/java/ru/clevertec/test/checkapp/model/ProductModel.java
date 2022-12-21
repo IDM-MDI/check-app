@@ -24,6 +24,6 @@ public class ProductModel {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private long id;
     private String name;
-    private boolean isOnOffer;
+    private boolean offer;
     private double price;
 }

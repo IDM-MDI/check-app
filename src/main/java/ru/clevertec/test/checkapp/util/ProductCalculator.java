@@ -11,7 +11,7 @@ public class ProductCalculator {
 
     public static double calculateCertainProduct(ProductModel product, int count) {
         double price = product.getPrice() * count;
-        return (product.isOnOffer() && count >= Offer_COUNT) ?
+        return (product.isOffer() && count >= Offer_COUNT) ?
                 price - calculateDiscount(price, Offer_DISCOUNT) : price;
     }
     public static double calculateTotalPriceWithoutDiscount(CheckModel check) {

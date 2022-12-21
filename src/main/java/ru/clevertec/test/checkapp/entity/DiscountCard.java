@@ -27,7 +27,7 @@ public class DiscountCard {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "number", unique = true)
+    @Column(name = "discount_number", unique = true)
     private int number;
     @Column(name = "discount")
     private int discount;

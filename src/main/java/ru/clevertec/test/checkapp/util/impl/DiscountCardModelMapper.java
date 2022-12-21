@@ -32,7 +32,7 @@ public class DiscountCardModelMapper implements ModelMapper<DiscountCard, Discou
 
     @Override
     public List<DiscountCard> toEntityList(List<DiscountCardModel> modelList) {
-        if(modelList == null || modelList.size() < 1) {
+        if(modelList == null || modelList.isEmpty()) {
             return Collections.emptyList();
         }
         return modelList.stream()
@@ -42,7 +42,7 @@ public class DiscountCardModelMapper implements ModelMapper<DiscountCard, Discou
 
     @Override
     public List<DiscountCardModel> toModelList(List<DiscountCard> entityList) {
-        if(entityList == null || entityList.size() < 1) {
+        if(entityList == null || entityList.isEmpty()) {
             return Collections.emptyList();
         }
         return entityList.stream()

@@ -13,6 +13,7 @@ import ru.clevertec.test.checkapp.service.ProductService;
 import ru.clevertec.test.checkapp.util.ProductCalculator;
 import ru.clevertec.test.checkapp.util.RequestParameterUtil;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -41,6 +42,7 @@ public class CheckServiceImpl implements CheckService {
         CheckModel check = CheckModel.builder()
                 .discountCard(card)
                 .elements(createCheckProduct(products))
+                .createdTime(LocalDateTime.now())
                 .build();
         fillTotalPrice(check);
         return check;
@@ -63,7 +65,7 @@ public class CheckServiceImpl implements CheckService {
             if(productCountMap.get(product) != null) {
                 productCountMap.put(product, productCountMap.get(product) + 1);
             }
-            productCountMap.putIfAbsent(product, 0);
+            productCountMap.putIfAbsent(product, 1);
         });
         return productCountMap;
     }

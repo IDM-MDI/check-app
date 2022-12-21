@@ -33,6 +33,6 @@ public class RequestParameterUtil {
     public static int findDiscountCardNumber(String queryString) {
         String[] splitQuery = separateQuery(queryString);
         String[] query = findQueryValue(DISCOUNT_CARD_NAME, splitQuery);
-        return query.length < 1 ? 0 : Integer.parseInt(query[1]);
+        return query.length < 1 ? 0 : Integer.parseInt(query[0]);
     }
 }
