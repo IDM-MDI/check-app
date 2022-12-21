@@ -25,5 +25,5 @@ public class CheckModel {
     private DiscountCardModel discountCard;
     private double totalPriceWithoutCard;
     private double totalPrice;
-    private LocalDateTime createdTime = LocalDateTime.now();
+    private LocalDateTime createdTime;
 }
