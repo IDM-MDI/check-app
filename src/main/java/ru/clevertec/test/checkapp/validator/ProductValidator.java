@@ -2,7 +2,6 @@ package ru.clevertec.test.checkapp.validator;
 
 import ru.clevertec.test.checkapp.model.ProductModel;
 
-import java.math.BigDecimal;
 import java.util.Objects;
 
 public class ProductValidator {

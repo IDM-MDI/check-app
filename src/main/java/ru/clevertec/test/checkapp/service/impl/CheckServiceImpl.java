@@ -50,13 +50,11 @@ public class CheckServiceImpl implements CheckService {
     private Set<CheckProduct> createCheckProduct(List<ProductModel> products) {
         Map<ProductModel, Integer> productCountMap = createProductCountMap(products);
         Set<CheckProduct> result = new HashSet<>();
-        productCountMap.forEach((k,v) -> {
-            result.add(CheckProduct.builder()
-                    .product(k)
-                    .totalPrice(ProductCalculator.calculateCertainProduct(k, v))
-                    .count(v)
-                    .build());
-        });
+        productCountMap.forEach((k,v) -> result.add(CheckProduct.builder()
+                .product(k)
+                .totalPrice(ProductCalculator.calculateCertainProduct(k, v))
+                .count(v)
+                .build()));
         return result;
     }
     private Map<ProductModel,Integer> createProductCountMap(List<ProductModel> products) {

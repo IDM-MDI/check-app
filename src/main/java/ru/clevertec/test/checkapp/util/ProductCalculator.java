@@ -5,14 +5,14 @@ import ru.clevertec.test.checkapp.model.CheckProduct;
 import ru.clevertec.test.checkapp.model.ProductModel;
 
 public class ProductCalculator {
-    private static final int Offer_COUNT = 5;
-    private static final int Offer_DISCOUNT = 10;
+    private static final int OFFER_COUNT = 5;
+    private static final int OFFER_DISCOUNT = 10;
     private ProductCalculator() {}
 
     public static double calculateCertainProduct(ProductModel product, int count) {
         double price = product.getPrice() * count;
-        return (product.isOffer() && count >= Offer_COUNT) ?
-                price - calculateDiscount(price, Offer_DISCOUNT) : price;
+        return (product.isOffer() && count >= OFFER_COUNT) ?
+                price - calculateDiscount(price, OFFER_DISCOUNT) : price;
     }
     public static double calculateTotalPriceWithoutDiscount(CheckModel check) {
         return check.getElements()
