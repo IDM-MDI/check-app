@@ -20,6 +20,6 @@ public class ProductValidator {
     public static boolean isNameValid(String name) {
         return Objects.nonNull(name) &&
                 !name.isBlank() &&
-                name.length() > 1;
+                name.length() > 1 && name.length() < 255;
     }
 }
