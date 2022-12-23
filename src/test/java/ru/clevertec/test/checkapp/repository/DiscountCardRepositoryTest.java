@@ -11,8 +11,6 @@ import ru.clevertec.test.checkapp.entity.DiscountCard;
 import ru.clevertec.test.checkapp.model.DiscountCardModel;
 import ru.clevertec.test.checkapp.util.impl.DiscountCardModelMapper;
 
-import java.util.Optional;
-
 @DataJpaTest
 @ContextConfiguration(classes = RepositoryConfig.class)
 @ComponentScan(basePackages = "ru.clevertec.test")

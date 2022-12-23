@@ -4,8 +4,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import ru.clevertec.test.checkapp.model.ProductModel;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 class ProductValidatorTest {
 
     @Test

@@ -3,10 +3,7 @@ package ru.clevertec.test.checkapp.util;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class RequestParameterUtilTest {
     private static final String TEST_QUERY = "id=1&id=2&id=3&card=1234";
