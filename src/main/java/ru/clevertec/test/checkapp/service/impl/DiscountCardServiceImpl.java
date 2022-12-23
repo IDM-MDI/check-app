@@ -38,7 +38,7 @@ public class DiscountCardServiceImpl implements DiscountCardService {
         if(isNumberZero(number)) {
             return null;
         } else if(!isNumberValid(number)) {
-            throw new ServiceException(ENTITY_NOT_FOUND.toString());
+            throw new ServiceException(ENTITY_NOT_VALID.toString());
         }
         return modelMapper.toModel(repository.findDiscountCardByNumber(number));
     }
