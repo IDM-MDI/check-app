@@ -24,8 +24,8 @@ public class ProductCalculator {
         if(check.getDiscountCard() == null) {
             return check.getTotalPriceWithoutCard();
         }
-        double totalPrice = check.getTotalPriceWithoutCard();
-        return totalPrice - calculateDiscount(totalPrice, check.getDiscountCard().getDiscount());
+        double totalPriceWithoutCard = check.getTotalPriceWithoutCard();
+        return totalPriceWithoutCard - calculateDiscount(totalPriceWithoutCard, check.getDiscountCard().getDiscount());
     }
     public static double calculateDiscount(double price, int discount) {
         return (price / 100) * discount;
