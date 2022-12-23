@@ -41,8 +41,7 @@ class DiscountCardRepositoryTest {
     void findDiscountCardByNumber() {
         repository.save(ENTITY_CARD);
         DiscountCard actual = repository.findDiscountCardByNumber(ENTITY_CARD.getNumber());
-        DiscountCard expected = MODEL_MAPPER.toEntity(MODEL_CARD);
-        expected.setId(1L);
-        Assertions.assertEquals(expected,actual);
+        actual.setId(0L);
+        Assertions.assertEquals(ENTITY_CARD,actual);
     }
 }
