@@ -1,6 +1,8 @@
 package ru.clevertec.test.checkapp.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,5 +30,11 @@ public class DiscountCardController {
     @PostMapping
     public DiscountCardModel save(@RequestBody DiscountCardModel model) throws ServiceException {
         return service.save(model);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteCardByID(@PathVariable long id) throws ServiceException {
+        service.delete(id);
+        return ResponseEntity.ok("The card was successfully deleted");
     }
 }
