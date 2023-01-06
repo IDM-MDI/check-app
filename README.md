@@ -14,6 +14,7 @@ The application was created for writing a check from product list and a discount
 * *JUnit*
 * *Mockito*
 * *Lombok*
+* *Docker*
 
 ### Entity description
 * **Product** - item for sale which can be on offer
