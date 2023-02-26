@@ -1,4 +1,4 @@
-package ru.clevertec.test.checkapp.aop;
+package ru.clevertec.test.checkapp.cache;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -7,8 +7,7 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-public @interface GetCache {
-    String cacheName() default "defaultCache";
-    String key();
+public @interface SaveCache {
+    String fieldName();
     Class<?> returnType();
 }

@@ -1,9 +1,7 @@
 package ru.clevertec.test.checkapp.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.clevertec.test.checkapp.aop.GetCache;
 import ru.clevertec.test.checkapp.exception.ServiceException;
 import ru.clevertec.test.checkapp.model.CheckModel;
 import ru.clevertec.test.checkapp.model.CheckProduct;

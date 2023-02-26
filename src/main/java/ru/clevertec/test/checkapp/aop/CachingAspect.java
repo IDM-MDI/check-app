@@ -1,97 +1,100 @@
 package ru.clevertec.test.checkapp.aop;
 
+import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.expression.ExpressionParser;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
-import ru.clevertec.test.checkapp.model.CacheObject;
+import ru.clevertec.test.checkapp.cache.CacheObject;
 
-import java.util.Arrays;
+import java.lang.reflect.Field;
+import java.util.Comparator;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Optional;
+import java.util.TreeSet;
 
 import org.springframework.expression.spel.support.StandardEvaluationContext;
+import ru.clevertec.test.checkapp.cache.GetCache;
+import ru.clevertec.test.checkapp.cache.SaveCache;
 
 @Aspect
 @Component
 public class CachingAspect {
     @Value("${cache.type}")
     private String cacheType;
-    private final Map<String, CacheObject> lfuCache = new LinkedHashMap<>();
-    private final Map<String, CacheObject> lruCache = new LinkedHashMap<>();
+    private final TreeSet<CacheObject> lfuCache = new TreeSet<>(
+            Comparator.comparing(CacheObject::getHitCount)
+                    .reversed()
+    );
+    private final TreeSet<CacheObject> lruCache = new TreeSet<>(
+            Comparator.comparing(CacheObject::getLastAccessedTime)
+                    .reversed()
+    );
 
-    @Around("@annotation(cacheable)")
-    public Object cacheable(ProceedingJoinPoint joinPoint, GetCache cacheable) throws Throwable {
-        Map<String, CacheObject> cache = getCacheType(cacheType);
-
-        String cacheName = cacheable.cacheName();
-        String key = cacheable.key();
-        Class<?> returnType = cacheable.returnType();
-
-
-        // Generate cache key using SpEL expression
-        StandardEvaluationContext context = new StandardEvaluationContext();
-        context.setVariables(getVariableMap(joinPoint));
-        ExpressionParser parser = new SpelExpressionParser();
-        String evaluatedKey = parser.parseExpression(key).getValue(context, String.class);
-
-        CacheObject cacheObject = cache.get(evaluatedKey);
-        if (cacheObject != null) {
-            return cacheObject.getValue();
+    @Around("@annotation(getCache)")
+    public Object cacheable(ProceedingJoinPoint joinPoint, GetCache getCache) throws Throwable {
+        TreeSet<CacheObject> cache = getCache(cacheType);
+        String evaluatedKey = getKeyValueFromMethod(joinPoint, getCache.key());
+        Optional<CacheObject> cacheObject = findByKey(cache, evaluatedKey);
+        if (cacheObject.isPresent()) {
+            return getPresentValue(cacheObject.get());
         }
+        return createNewCache(cache, evaluatedKey, joinPoint.proceed());
+    }
 
-        Object result = joinPoint.proceed();
+    @AfterReturning(value = "@annotation(saveCache)",returning = "result")
+    public void saveCache(SaveCache saveCache,Object result) throws NoSuchFieldException, IllegalAccessException {
+        String id = getFieldValue(result,saveCache.fieldName());
+        TreeSet<CacheObject> cache = getCache(cacheType);
+        createNewCache(cache, id, result);
+    }
 
-        cacheObject = new CacheObject(result, System.currentTimeMillis());
-        cache.put(evaluatedKey, cacheObject);
+    private static String getFieldValue(Object result,String field) throws NoSuchFieldException, IllegalAccessException {
+        Field idField = result.getClass()
+                .getDeclaredField(field);
+        idField.setAccessible(true);
+        return idField.get(result).toString();
+    }
 
+    private static Object getPresentValue(CacheObject cacheObject) {
+        cacheObject.hit();
+        return cacheObject.getValue();
+    }
+
+    private static Object createNewCache(TreeSet<CacheObject> cache, String evaluatedKey, Object result) {
+        cache.add(new CacheObject(evaluatedKey, result));
         return result;
     }
 
-//    @Around("@annotation(cachePut)")
-//    public Object cachePut(ProceedingJoinPoint joinPoint, UpdateCache cachePut) throws Throwable {
-//        Map<String, CacheObject> cache = getCache(cachePut.cacheName());
-//        String cacheKey = getCacheKey(joinPoint, cachePut.key());
-//        Object result = joinPoint.proceed();
-//        if (result != null) {
-//            cache.put(cacheKey, new CacheObject(result, cachePut.maxAgeSeconds()));
-//        }
-//        return result;
-//    }
-//
-//    @Around("@annotation(cacheEvict)")
-//    public Object cacheEvict(ProceedingJoinPoint joinPoint, DeleteCache cacheEvict) throws Throwable {
-//        Map<String, CacheObject> cache = getCache(cacheEvict.cacheName());
-//        String cacheKey = getCacheKey(joinPoint, cacheEvict.key());
-//        cache.remove(cacheKey);
-//        return joinPoint.proceed();
-//    }
+    private String getKeyValueFromMethod(JoinPoint joinPoint, String key) {
+        StandardEvaluationContext context = new StandardEvaluationContext();
+        context.setVariables(getVariableMap(joinPoint));
+        return new SpelExpressionParser().parseExpression(key).getValue(context, String.class);
+    }
 
-    private Map<String, CacheObject> getCacheType(String cacheName) {
-        if ("lfu".equals(cacheName)) {
-            return lfuCache;
-        } else if ("lru".equals(cacheName)) {
-            return lruCache;
-        } else {
-            throw new IllegalArgumentException("Unknown cache name: " + cacheName);
+    private static Optional<CacheObject> findByKey(TreeSet<CacheObject> cache, String evaluatedKey) {
+        return cache.stream()
+                .filter(cacheObjectEntry -> cacheObjectEntry.getKey().equals(evaluatedKey))
+                .findAny();
+    }
+    private TreeSet<CacheObject> getCache(String cacheName) {
+        switch (cacheName) {
+            case "lfu" -> {
+                return lfuCache;
+            }
+            case "lru" -> {
+                return lruCache;
+            }
+            default -> throw new IllegalArgumentException("Unknown cache name: " + cacheName);
         }
     }
 
-    private String getCacheKey(ProceedingJoinPoint joinPoint, String key) {
-        if (StringUtils.hasText(key)) {
-            return key;
-        } else {
-            return Arrays.toString(joinPoint.getArgs());
-        }
-    }
-
-    private Map<String, Object> getVariableMap(ProceedingJoinPoint joinPoint) {
+    private Map<String, Object> getVariableMap(JoinPoint joinPoint) {
         Map<String, Object> variableMap = new HashMap<>();
         Object[] args = joinPoint.getArgs();
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
