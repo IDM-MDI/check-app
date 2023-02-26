@@ -1,27 +1,19 @@
 package ru.clevertec.test.checkapp.aop;
 
-import org.aspectj.lang.JoinPoint;
+import lombok.RequiredArgsConstructor;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.reflect.MethodSignature;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.stereotype.Component;
+import ru.clevertec.test.checkapp.cache.CacheHandler;
 import ru.clevertec.test.checkapp.cache.CacheKey;
 
-import java.lang.reflect.Field;
-import java.util.Comparator;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.SortedSet;
-import java.util.TreeMap;
-import java.util.TreeSet;
 
-import org.springframework.expression.spel.support.StandardEvaluationContext;
 import ru.clevertec.test.checkapp.cache.DeleteCache;
 import ru.clevertec.test.checkapp.cache.GetCache;
 import ru.clevertec.test.checkapp.cache.SaveCache;
@@ -29,112 +21,48 @@ import ru.clevertec.test.checkapp.cache.UpdateCache;
 
 @Aspect
 @Component
+@RequiredArgsConstructor
 public class CachingAspect {
-    @Value("${cache.type}")
-    private String cacheType;
-    private final SortedSet<CacheKey> lfuCache = new TreeSet<>(
-            Comparator.comparing(CacheKey::getHitCount)
-                    .reversed()
-    );
-    private final SortedSet<CacheKey> lruCache = new TreeSet<>(
-            Comparator.comparing(CacheKey::getLastAccessedTime)
-                    .reversed()
-    );
+    private final Map<Class<?>,SortedSet<CacheKey>> classCache = new HashMap<>();
+    private final CacheHandler handler;
 
     @Around("@annotation(getCache)")
     public Object cacheable(ProceedingJoinPoint joinPoint, GetCache getCache) throws Throwable {
-        SortedSet<CacheKey> cache = getCache(cacheType);
-        String evaluatedKey = getKeyValueFromMethod(joinPoint, getCache.key());
-        Optional<CacheKey> cacheObject = findByKey(cache, evaluatedKey);
+        SortedSet<CacheKey> cache = handler.getClassCache(classCache,getCache.returnType());
+        String evaluatedKey = handler.getKeyValueFromMethod(joinPoint, getCache.key());
+        Optional<CacheKey> cacheObject = handler.findByKey(cache, evaluatedKey);
         if (cacheObject.isPresent()) {
-            return getPresentValue(cacheObject.get());
+            return handler.getPresentValue(cacheObject.get());
         }
-        return createNewCache(cache, evaluatedKey, joinPoint.proceed());
+        return handler.createNewCache(cache, evaluatedKey, joinPoint.proceed());
     }
 
-    private static Object createNewCache(SortedSet<CacheKey> cache, String evaluatedKey, Object result) {
-        cache.add(new CacheKey(evaluatedKey, result));
-        return result;
-    }
     @AfterReturning(value = "@annotation(saveCache)",returning = "result")
     public void saveCache(SaveCache saveCache,Object result) throws NoSuchFieldException, IllegalAccessException {
-        String id = getFieldValue(result,saveCache.fieldName());
-        SortedSet<CacheKey> cache = getCache(cacheType);
-        createNewCache(cache, id, result);
+        SortedSet<CacheKey> cache = handler.getClassCache(classCache,saveCache.returnType());
+        String id = handler.getFieldValue(result,saveCache.fieldName());
+        handler.createNewCache(cache, id, result);
     }
 
     @Around("@annotation(deleteCache)")
     public Object cacheable(ProceedingJoinPoint joinPoint, DeleteCache deleteCache) throws Throwable {
-        SortedSet<CacheKey> cache = getCache(cacheType);
-        String evaluatedKey = getKeyValueFromMethod(joinPoint, deleteCache.key());
-        Optional<CacheKey> cacheObject = findByKey(cache, evaluatedKey);
-        Object result = joinPoint.proceed();
-        cacheObject.ifPresent(k -> deleteFromCache(cache,k));
-        return result;
+        String evaluatedKey = handler.getKeyValueFromMethod(joinPoint, deleteCache.key());
+        SortedSet<CacheKey> cache = handler.getClassCache(classCache, deleteCache.returnType());
+        return deleteFromCache(cache, joinPoint, evaluatedKey);
     }
 
     @Around("@annotation(updateCache)")
     public Object cacheable(ProceedingJoinPoint joinPoint, UpdateCache updateCache) throws Throwable {
-        SortedSet<CacheKey> cache = getCache(cacheType);
-        String evaluatedKey = getKeyValueFromMethod(joinPoint, updateCache.key());
-        Optional<CacheKey> cacheObject = findByKey(cache, evaluatedKey);
+        String evaluatedKey = handler.getKeyValueFromMethod(joinPoint, updateCache.key());
+        SortedSet<CacheKey> cache = handler.getClassCache(classCache, updateCache.returnType());
+        Object result = deleteFromCache(cache, joinPoint, evaluatedKey);
+        return handler.createNewCache(cache, evaluatedKey, result);
+    }
+
+    private Object deleteFromCache(SortedSet<CacheKey> cache, ProceedingJoinPoint joinPoint, String evaluatedKey) throws Throwable {
+        Optional<CacheKey> cacheObject = handler.findByKey(cache, evaluatedKey);
         Object result = joinPoint.proceed();
-        cacheObject.ifPresent(object -> deleteFromCache(cache, object));
-        return createNewCache(cache, evaluatedKey, result);
-    }
-
-    private void deleteFromCache(SortedSet<CacheKey> cache, CacheKey cacheKey) {
-        cache.remove(cacheKey);
-    }
-
-
-    private static String getFieldValue(Object result,String field) throws NoSuchFieldException, IllegalAccessException {
-        Field idField = result.getClass()
-                .getDeclaredField(field);
-        idField.setAccessible(true);
-        return idField.get(result).toString();
-    }
-
-
-
-    private static Object getPresentValue(CacheKey cacheKey) {
-        cacheKey.hit();
-        return cacheKey.getValue();
-    }
-
-    private String getKeyValueFromMethod(JoinPoint joinPoint, String key) {
-        StandardEvaluationContext context = new StandardEvaluationContext();
-        context.setVariables(getVariableMap(joinPoint));
-        return new SpelExpressionParser().parseExpression(key).getValue(context, String.class);
-    }
-
-    private static Optional<CacheKey> findByKey(SortedSet<CacheKey> cache, String evaluatedKey) {
-        return cache.stream()
-                .filter(cacheKeyEntry -> cacheKeyEntry.getStringKey().equals(evaluatedKey))
-                .findAny();
-    }
-    private SortedSet<CacheKey> getCache(String cacheName) {
-        switch (cacheName) {
-            case "lfu" -> {
-                return lfuCache;
-            }
-            case "lru" -> {
-                return lruCache;
-            }
-            default -> throw new IllegalArgumentException("Unknown cache name: " + cacheName);
-        }
-    }
-
-    private Map<String, Object> getVariableMap(JoinPoint joinPoint) {
-        Map<String, Object> variableMap = new HashMap<>();
-        Object[] args = joinPoint.getArgs();
-        MethodSignature signature = (MethodSignature) joinPoint.getSignature();
-        String[] parameterNames = signature.getParameterNames();
-
-        for (int i = 0; i < args.length; i++) {
-            variableMap.put(parameterNames[i], args[i]);
-        }
-
-        return variableMap;
+        cacheObject.ifPresent(k -> handler.deleteFromCache(cache,k));
+        return result;
     }
 }

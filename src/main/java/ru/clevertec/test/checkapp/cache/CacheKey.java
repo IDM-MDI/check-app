@@ -1,6 +1,7 @@
 package ru.clevertec.test.checkapp.cache;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.util.Objects;
 
@@ -10,6 +11,7 @@ public class CacheKey {
     private Object value;
     private long lastAccessedTime;
     private int hitCount;
+
     public CacheKey(String stringKey, Object value) {
         this.stringKey = stringKey;
         this.value = value;
@@ -25,12 +27,12 @@ public class CacheKey {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        CacheKey that = (CacheKey) o;
-        return stringKey.equals(that.stringKey);
+        CacheKey cacheKey = (CacheKey) o;
+        return lastAccessedTime == cacheKey.lastAccessedTime && hitCount == cacheKey.hitCount && stringKey.equals(cacheKey.stringKey) && Objects.equals(value, cacheKey.value);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(stringKey);
+        return Objects.hash(stringKey, value, lastAccessedTime, hitCount);
     }
 }
