@@ -7,14 +7,14 @@ import static org.junit.jupiter.api.Assertions.*;
 class JsonSerializeHandlerTest {
 
     @Test
-    void joinToString() {
+    void joinToStringShouldReturnCorrectString() {
     }
 
     @Test
-    void convertToPrimitive() {
+    void convertToPrimitiveShouldReturnCorrectString() {
     }
 
     @Test
-    void convertToText() {
+    void convertToTextShouldReturnCorrectString() {
     }
 }

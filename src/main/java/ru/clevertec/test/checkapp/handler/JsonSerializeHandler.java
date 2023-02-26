@@ -7,9 +7,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.function.Function;
 
-import static ru.clevertec.test.checkapp.model.JsonStringField.CHAR_QUOT;
 import static ru.clevertec.test.checkapp.model.JsonStringField.STRING_QUOT;
-import static ru.clevertec.test.checkapp.validator.JSONClassValidator.isString;
 import static ru.clevertec.test.checkapp.validator.JSONClassValidator.isText;
 
 @Component
@@ -27,10 +25,6 @@ public class JsonSerializeHandler {
 
     @SneakyThrows
     public String convertToText(Object obj) {
-        String value = obj.toString();
-        return isString(obj) ?
-                STRING_QUOT + value + STRING_QUOT
-                :
-                CHAR_QUOT + value + CHAR_QUOT;
+        return STRING_QUOT + obj.toString() + STRING_QUOT;
     }
 }

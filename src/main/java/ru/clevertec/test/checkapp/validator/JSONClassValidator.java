@@ -9,7 +9,7 @@ public class JSONClassValidator {
         return isNumber(obj) || isText(obj) || isBoolean(obj);
     }
     public static boolean isText(Object obj) {
-        return isString(obj) || obj.getClass() == Character.class;
+        return obj.getClass() == String.class || obj.getClass() == Character.class;
     }
     public static boolean isNumber(Object obj) {
         Class<?> objClass = obj.getClass();
@@ -22,9 +22,5 @@ public class JSONClassValidator {
     }
     public static boolean isBoolean(Object obj) {
         return obj.getClass() == Boolean.class;
-    }
-
-    public static boolean isString(Object obj) {
-        return obj.getClass() == String.class;
     }
 }
