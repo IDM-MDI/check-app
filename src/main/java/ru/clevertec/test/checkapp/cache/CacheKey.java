@@ -7,10 +7,12 @@ import java.util.Objects;
 @Data
 public class CacheKey {
     private final String stringKey;
+    private Object value;
     private long lastAccessedTime;
     private int hitCount;
-    public CacheKey(String stringKey) {
+    public CacheKey(String stringKey, Object value) {
         this.stringKey = stringKey;
+        this.value = value;
         this.lastAccessedTime = System.currentTimeMillis();
         this.hitCount = 1;
     }

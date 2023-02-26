@@ -14,9 +14,12 @@ import ru.clevertec.test.checkapp.cache.CacheKey;
 import java.lang.reflect.Field;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.SortedSet;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 import ru.clevertec.test.checkapp.cache.DeleteCache;
@@ -29,40 +32,40 @@ import ru.clevertec.test.checkapp.cache.UpdateCache;
 public class CachingAspect {
     @Value("${cache.type}")
     private String cacheType;
-    private final TreeMap<CacheKey, Object> lfuCache = new TreeMap<>(
+    private final SortedSet<CacheKey> lfuCache = new TreeSet<>(
             Comparator.comparing(CacheKey::getHitCount)
                     .reversed()
     );
-    private final TreeMap<CacheKey, Object> lruCache = new TreeMap<>(
+    private final SortedSet<CacheKey> lruCache = new TreeSet<>(
             Comparator.comparing(CacheKey::getLastAccessedTime)
                     .reversed()
     );
 
     @Around("@annotation(getCache)")
     public Object cacheable(ProceedingJoinPoint joinPoint, GetCache getCache) throws Throwable {
-        TreeMap<CacheKey, Object> cache = getCache(cacheType);
+        SortedSet<CacheKey> cache = getCache(cacheType);
         String evaluatedKey = getKeyValueFromMethod(joinPoint, getCache.key());
         Optional<CacheKey> cacheObject = findByKey(cache, evaluatedKey);
         if (cacheObject.isPresent()) {
-            return getPresentValue(cacheObject.get(),cache);
+            return getPresentValue(cacheObject.get());
         }
         return createNewCache(cache, evaluatedKey, joinPoint.proceed());
     }
 
-    private static Object createNewCache(TreeMap<CacheKey, Object> cache, String evaluatedKey, Object result) {
-        cache.put(new CacheKey(evaluatedKey),result);
+    private static Object createNewCache(SortedSet<CacheKey> cache, String evaluatedKey, Object result) {
+        cache.add(new CacheKey(evaluatedKey, result));
         return result;
     }
     @AfterReturning(value = "@annotation(saveCache)",returning = "result")
     public void saveCache(SaveCache saveCache,Object result) throws NoSuchFieldException, IllegalAccessException {
         String id = getFieldValue(result,saveCache.fieldName());
-        TreeMap<CacheKey, Object> cache = getCache(cacheType);
+        SortedSet<CacheKey> cache = getCache(cacheType);
         createNewCache(cache, id, result);
     }
 
     @Around("@annotation(deleteCache)")
     public Object cacheable(ProceedingJoinPoint joinPoint, DeleteCache deleteCache) throws Throwable {
-        TreeMap<CacheKey, Object> cache = getCache(cacheType);
+        SortedSet<CacheKey> cache = getCache(cacheType);
         String evaluatedKey = getKeyValueFromMethod(joinPoint, deleteCache.key());
         Optional<CacheKey> cacheObject = findByKey(cache, evaluatedKey);
         Object result = joinPoint.proceed();
@@ -72,7 +75,7 @@ public class CachingAspect {
 
     @Around("@annotation(updateCache)")
     public Object cacheable(ProceedingJoinPoint joinPoint, UpdateCache updateCache) throws Throwable {
-        TreeMap<CacheKey, Object> cache = getCache(cacheType);
+        SortedSet<CacheKey> cache = getCache(cacheType);
         String evaluatedKey = getKeyValueFromMethod(joinPoint, updateCache.key());
         Optional<CacheKey> cacheObject = findByKey(cache, evaluatedKey);
         Object result = joinPoint.proceed();
@@ -80,7 +83,7 @@ public class CachingAspect {
         return createNewCache(cache, evaluatedKey, result);
     }
 
-    private void deleteFromCache(TreeMap<CacheKey, Object> cache, CacheKey cacheKey) {
+    private void deleteFromCache(SortedSet<CacheKey> cache, CacheKey cacheKey) {
         cache.remove(cacheKey);
     }
 
@@ -94,12 +97,9 @@ public class CachingAspect {
 
 
 
-    private static Object getPresentValue(CacheKey cacheKey, TreeMap<CacheKey, Object> cache) {
-        Object result = cache.get(cacheKey);
-        cache.remove(cacheKey);
+    private static Object getPresentValue(CacheKey cacheKey) {
         cacheKey.hit();
-        cache.put(cacheKey,result);
-        return result;
+        return cacheKey.getValue();
     }
 
     private String getKeyValueFromMethod(JoinPoint joinPoint, String key) {
@@ -108,13 +108,12 @@ public class CachingAspect {
         return new SpelExpressionParser().parseExpression(key).getValue(context, String.class);
     }
 
-    private static Optional<CacheKey> findByKey(TreeMap<CacheKey, Object> cache, String evaluatedKey) {
-        return cache.keySet()
-                .stream()
+    private static Optional<CacheKey> findByKey(SortedSet<CacheKey> cache, String evaluatedKey) {
+        return cache.stream()
                 .filter(cacheKeyEntry -> cacheKeyEntry.getStringKey().equals(evaluatedKey))
                 .findAny();
     }
-    private TreeMap<CacheKey, Object> getCache(String cacheName) {
+    private SortedSet<CacheKey> getCache(String cacheName) {
         switch (cacheName) {
             case "lfu" -> {
                 return lfuCache;
