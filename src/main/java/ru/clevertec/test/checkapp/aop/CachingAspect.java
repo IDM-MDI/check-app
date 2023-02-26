@@ -19,6 +19,7 @@ import java.util.Optional;
 import java.util.TreeSet;
 
 import org.springframework.expression.spel.support.StandardEvaluationContext;
+import ru.clevertec.test.checkapp.cache.DeleteCache;
 import ru.clevertec.test.checkapp.cache.GetCache;
 import ru.clevertec.test.checkapp.cache.SaveCache;
 
@@ -53,6 +54,20 @@ public class CachingAspect {
         TreeSet<CacheObject> cache = getCache(cacheType);
         createNewCache(cache, id, result);
     }
+    @Around("@annotation(deleteCache)")
+    public Object cacheable(ProceedingJoinPoint joinPoint, DeleteCache deleteCache) throws Throwable {
+        TreeSet<CacheObject> cache = getCache(cacheType);
+        String evaluatedKey = getKeyValueFromMethod(joinPoint, deleteCache.key());
+        Optional<CacheObject> cacheObject = findByKey(cache, evaluatedKey);
+        Object result = joinPoint.proceed();
+        cacheObject.ifPresent(k -> deleteFromCache(cache,k));
+        return result;
+    }
+
+    private void deleteFromCache(TreeSet<CacheObject> cache, CacheObject cacheObject) {
+        cache.remove(cacheObject);
+    }
+
 
     private static String getFieldValue(Object result,String field) throws NoSuchFieldException, IllegalAccessException {
         Field idField = result.getClass()
@@ -60,6 +75,8 @@ public class CachingAspect {
         idField.setAccessible(true);
         return idField.get(result).toString();
     }
+
+
 
     private static Object getPresentValue(CacheObject cacheObject) {
         cacheObject.hit();
