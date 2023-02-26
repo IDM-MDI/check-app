@@ -65,6 +65,13 @@ public class ProductServiceImpl implements ProductService {
         return findProducts(ids);
     }
 
+    @Override
+
+    public ProductModel update(long id, ProductModel model) throws ServiceException {
+        model.setId(id);
+        return modelMapper.toModel(repository.save(modelMapper.toEntity(model)));
+    }
+
     private List<ProductModel> findProducts(List<Long> ids) throws ServiceException {
         List<ProductModel> products = new ArrayList<>();
         for (Long id : ids) {
