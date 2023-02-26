@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import ru.clevertec.test.checkapp.config.RepositoryConfig;
 import ru.clevertec.test.checkapp.entity.Product;
@@ -13,7 +14,8 @@ import ru.clevertec.test.checkapp.util.impl.ProductModelMapper;
 
 @DataJpaTest
 @ContextConfiguration(classes = RepositoryConfig.class)
-@ComponentScan(basePackages = "ru.clevertec.test")
+@ComponentScan(basePackages = "ru.clevertec.test.checkapp")
+@ActiveProfiles("test")
 class ProductRepositoryTest {
     private static final ProductModelMapper MODEL_MAPPER = new ProductModelMapper();
     private static final ProductModel PRODUCT_MODEL = ProductModel.builder()
