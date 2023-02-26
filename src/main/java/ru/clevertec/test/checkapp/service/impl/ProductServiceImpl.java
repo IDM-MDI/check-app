@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import ru.clevertec.test.checkapp.cache.DeleteCache;
 import ru.clevertec.test.checkapp.cache.GetCache;
 import ru.clevertec.test.checkapp.cache.SaveCache;
+import ru.clevertec.test.checkapp.cache.UpdateCache;
 import ru.clevertec.test.checkapp.entity.Product;
 import ru.clevertec.test.checkapp.exception.ServiceException;
 import ru.clevertec.test.checkapp.model.ProductModel;
@@ -66,7 +67,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-
+    @UpdateCache(key = "#id",returnType = ProductModel.class)
     public ProductModel update(long id, ProductModel model) throws ServiceException {
         model.setId(id);
         return modelMapper.toModel(repository.save(modelMapper.toEntity(model)));
