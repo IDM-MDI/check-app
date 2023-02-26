@@ -4,6 +4,7 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.expression.ExpressionParser;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.stereotype.Component;
@@ -20,16 +21,19 @@ import org.springframework.expression.spel.support.StandardEvaluationContext;
 @Aspect
 @Component
 public class CachingAspect {
+    @Value("${cache.type}")
+    private String cacheType;
     private final Map<String, CacheObject> lfuCache = new LinkedHashMap<>();
     private final Map<String, CacheObject> lruCache = new LinkedHashMap<>();
 
     @Around("@annotation(cacheable)")
     public Object cacheable(ProceedingJoinPoint joinPoint, GetCache cacheable) throws Throwable {
-        String cacheName = cacheable.cacheNames();
+        Map<String, CacheObject> cache = getCacheType(cacheType);
+
+        String cacheName = cacheable.cacheName();
         String key = cacheable.key();
         Class<?> returnType = cacheable.returnType();
 
-        Map<String, CacheObject> cache = getCache(cacheName);
 
         // Generate cache key using SpEL expression
         StandardEvaluationContext context = new StandardEvaluationContext();
@@ -69,10 +73,10 @@ public class CachingAspect {
 //        return joinPoint.proceed();
 //    }
 
-    private Map<String, CacheObject> getCache(String cacheName) {
-        if ("lfuCache".equals(cacheName)) {
+    private Map<String, CacheObject> getCacheType(String cacheName) {
+        if ("lfu".equals(cacheName)) {
             return lfuCache;
-        } else if ("lruCache".equals(cacheName)) {
+        } else if ("lru".equals(cacheName)) {
             return lruCache;
         } else {
             throw new IllegalArgumentException("Unknown cache name: " + cacheName);

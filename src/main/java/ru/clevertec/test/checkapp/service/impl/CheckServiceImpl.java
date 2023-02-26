@@ -35,7 +35,6 @@ public class CheckServiceImpl implements CheckService {
         return createCheck(productService.findByID(productIds),cardService.findByNumber(number));
     }
 
-    @GetCache(cacheNames = "check", key = "#products", returnType = CheckModel.class)
     private CheckModel createCheck(List<ProductModel> products, DiscountCardModel card) {
         CheckModel check = CheckModel.builder()
                 .discountCard(card)

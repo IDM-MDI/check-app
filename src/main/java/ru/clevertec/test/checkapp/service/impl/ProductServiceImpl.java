@@ -2,6 +2,7 @@ package ru.clevertec.test.checkapp.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.clevertec.test.checkapp.aop.GetCache;
 import ru.clevertec.test.checkapp.entity.Product;
 import ru.clevertec.test.checkapp.exception.ServiceException;
 import ru.clevertec.test.checkapp.model.ProductModel;
@@ -32,6 +33,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @GetCache(cacheName = "check", key = "#id", returnType = ProductModel.class)
     public ProductModel findByID(long id) throws ServiceException {
         return modelMapper.toModel(repository.findById(id)
                 .orElseThrow(() -> new ServiceException(ENTITY_NOT_FOUND.toString())));
