@@ -4,7 +4,6 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 class JSONClassValidatorTest {
-
     @Test
     void isPrimitiveShouldReturnTrue() {
         Assertions.assertThat(JSONClassValidator.isPrimitive(1))
