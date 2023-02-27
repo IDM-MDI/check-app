@@ -59,7 +59,6 @@ class JsonSerializeHandlerTest {
     void convertToTextShouldReturnCorrectString() {
         String expected = "\"text\"";
 
-
         String result = handler.convertToPrimitive("text");
 
         Assertions.assertThat(result).isEqualTo(expected);
