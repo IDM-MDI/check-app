@@ -19,13 +19,33 @@ import ru.clevertec.test.checkapp.cache.GetCache;
 import ru.clevertec.test.checkapp.cache.SaveCache;
 import ru.clevertec.test.checkapp.cache.UpdateCache;
 
+
+/**
+ * CachingAspect is an aspect that provides caching functionality for annotated methods.
+ */
 @Aspect
 @Component
 @RequiredArgsConstructor
 public class CachingAspect {
+    /**
+     * A map that stores cache data for each class.
+     */
     private final Map<Class<?>,SortedSet<CacheKey>> classCache = new HashMap<>();
+
+    /**
+     * An object that handles cache operations.
+     */
     private final CacheHandler handler;
 
+
+    /**
+     * A method-level advice that intercepts methods annotated with {@link GetCache} annotation
+     * and provides caching functionality.
+     * @param joinPoint The join point that represents the method execution.
+     * @param getCache The annotation that indicates the method is cacheable.
+     * @return The cached value or the result of the method execution.
+     * @throws Throwable If an exception occurs during method execution.
+     */
     @Around("@annotation(getCache)")
     public Object cacheable(ProceedingJoinPoint joinPoint, GetCache getCache) throws Throwable {
         SortedSet<CacheKey> cache = handler.getClassCache(classCache,getCache.returnType());
@@ -37,6 +57,15 @@ public class CachingAspect {
         return handler.createNewCache(cache, evaluatedKey, joinPoint.proceed());
     }
 
+
+    /**
+     * A method-level advice that intercepts methods annotated with {@link SaveCache} annotation
+     * and saves the result to the cache.
+     * @param saveCache The annotation that indicates the method saves data to the cache.
+     * @param result The result of the method execution.
+     * @throws NoSuchFieldException If the specified field does not exist.
+     * @throws IllegalAccessException If the specified field is not accessible.
+     */
     @AfterReturning(value = "@annotation(saveCache)",returning = "result")
     public void saveCache(SaveCache saveCache,Object result) throws NoSuchFieldException, IllegalAccessException {
         SortedSet<CacheKey> cache = handler.getClassCache(classCache,saveCache.returnType());
@@ -44,6 +73,15 @@ public class CachingAspect {
         handler.createNewCache(cache, id, result);
     }
 
+
+    /**
+     * A method-level advice that intercepts methods annotated with {@link DeleteCache} annotation
+     * and removes the cached value associated with the specified key.
+     * @param joinPoint The join point that represents the method execution.
+     * @param deleteCache The annotation that indicates the method deletes data from the cache.
+     * @return The result of the method execution.
+     * @throws Throwable If an exception occurs during method execution.
+     */
     @Around("@annotation(deleteCache)")
     public Object cacheable(ProceedingJoinPoint joinPoint, DeleteCache deleteCache) throws Throwable {
         String evaluatedKey = handler.getKeyValueFromMethod(joinPoint, deleteCache.key());
@@ -54,6 +92,15 @@ public class CachingAspect {
         return result;
     }
 
+
+    /**
+     * A method-level advice that intercepts methods annotated with {@link UpdateCache} annotation
+     * and updates the cached value associated with the specified key.
+     * @param joinPoint The join point that represents the method execution.
+     * @param updateCache The annotation that indicates the method updates data in the cache.
+     * @return The cached value or the result of the method execution.
+     * @throws Throwable If an exception occurs during method execution.
+     */
     @Around("@annotation(updateCache)")
     public Object cacheable(ProceedingJoinPoint joinPoint, UpdateCache updateCache) throws Throwable {
         String evaluatedKey = handler.getKeyValueFromMethod(joinPoint, updateCache.key());
