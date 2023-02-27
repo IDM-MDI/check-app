@@ -91,27 +91,11 @@ public class CacheHandler {
      */
     public Optional<CacheKey> findByKey(SortedSet<CacheKey> cache, String evaluatedKey) {
         return cache.stream()
-                .sorted(cacheType.equals("lru") ? lruComparator : lfuComparator)
+                .sorted("lru".equals(cacheType) ? lruComparator : lfuComparator)
                 .filter(cacheKeyEntry -> cacheKeyEntry.getStringKey().equals(evaluatedKey))
                 .findAny();
     }
 
-
-    /**
-     * The getVariableMap method retrieves a Map of parameter names and values from a JoinPoint object.
-     * @param joinPoint The JoinPoint object for the method call.
-     * @return A Map containing parameter names and values.
-     */
-    public Map<String, Object> getVariableMap(JoinPoint joinPoint) {
-        Map<String, Object> variableMap = new HashMap<>();
-        Object[] args = joinPoint.getArgs();
-        MethodSignature signature = (MethodSignature) joinPoint.getSignature();
-        String[] parameterNames = signature.getParameterNames();
-        IntStream.range(0, args.length)
-                .forEach(i -> variableMap.put(parameterNames[i], args[i]));
-
-        return variableMap;
-    }
 
     /**
      * The createNewCache method creates a new CacheKey and adds it to the provided SortedSet.
@@ -150,5 +134,21 @@ public class CacheHandler {
     private SortedSet<CacheKey> createSortedSet(Map<Class<?>,SortedSet<CacheKey>> cache,Class<?> className) {
         cache.put(className,new TreeSet<>(Comparator.comparing(CacheKey::getStringKey)));
         return cache.get(className);
+    }
+
+    /**
+     * The getVariableMap method retrieves a Map of parameter names and values from a JoinPoint object.
+     * @param joinPoint The JoinPoint object for the method call.
+     * @return A Map containing parameter names and values.
+     */
+    private Map<String, Object> getVariableMap(JoinPoint joinPoint) {
+        Map<String, Object> variableMap = new HashMap<>();
+        Object[] args = joinPoint.getArgs();
+        MethodSignature signature = (MethodSignature) joinPoint.getSignature();
+        String[] parameterNames = signature.getParameterNames();
+        IntStream.range(0, args.length)
+                .forEach(i -> variableMap.put(parameterNames[i], args[i]));
+
+        return variableMap;
     }
 }
