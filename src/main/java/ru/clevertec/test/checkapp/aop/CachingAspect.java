@@ -47,7 +47,7 @@ public class CachingAspect {
      * @throws Throwable If an exception occurs during method execution.
      */
     @Around("@annotation(getCache)")
-    public Object cacheable(ProceedingJoinPoint joinPoint, GetCache getCache) throws Throwable {
+    public Object getCacheAdvise(ProceedingJoinPoint joinPoint, GetCache getCache) throws Throwable {
         SortedSet<CacheKey> cache = handler.getClassCache(classCache,getCache.returnType());
         String evaluatedKey = handler.getKeyValueFromMethod(joinPoint, getCache.key());
         Optional<CacheKey> cacheObject = handler.findByKey(cache, evaluatedKey);
@@ -67,7 +67,7 @@ public class CachingAspect {
      * @throws IllegalAccessException If the specified field is not accessible.
      */
     @AfterReturning(value = "@annotation(saveCache)",returning = "result")
-    public void saveCache(SaveCache saveCache,Object result) throws NoSuchFieldException, IllegalAccessException {
+    public void saveCacheAdvise(SaveCache saveCache,Object result) throws NoSuchFieldException, IllegalAccessException {
         SortedSet<CacheKey> cache = handler.getClassCache(classCache,saveCache.returnType());
         String id = handler.getFieldValue(result,saveCache.fieldName());
         handler.createNewCache(cache, id, result);
@@ -83,7 +83,7 @@ public class CachingAspect {
      * @throws Throwable If an exception occurs during method execution.
      */
     @Around("@annotation(deleteCache)")
-    public Object cacheable(ProceedingJoinPoint joinPoint, DeleteCache deleteCache) throws Throwable {
+    public Object deleteCacheAdvise(ProceedingJoinPoint joinPoint, DeleteCache deleteCache) throws Throwable {
         String evaluatedKey = handler.getKeyValueFromMethod(joinPoint, deleteCache.key());
         SortedSet<CacheKey> cache = handler.getClassCache(classCache, deleteCache.returnType());
         Optional<CacheKey> cacheObject = handler.findByKey(cache, evaluatedKey);
@@ -102,7 +102,7 @@ public class CachingAspect {
      * @throws Throwable If an exception occurs during method execution.
      */
     @Around("@annotation(updateCache)")
-    public Object cacheable(ProceedingJoinPoint joinPoint, UpdateCache updateCache) throws Throwable {
+    public Object updateCacheAdvise(ProceedingJoinPoint joinPoint, UpdateCache updateCache) throws Throwable {
         String evaluatedKey = handler.getKeyValueFromMethod(joinPoint, updateCache.key());
         SortedSet<CacheKey> cache = handler.getClassCache(classCache, updateCache.returnType());
         Optional<CacheKey> cacheObject = handler.findByKey(cache, evaluatedKey);
