@@ -71,10 +71,8 @@ class CachingAspectTest {
         when(joinPoint.proceed()).thenReturn(expected);
         when(cacheHandler.createNewCache(cache,"key",expected))
                 .thenReturn(expected);
-        // when
         Object result = cachingAspect.getCacheAdvise(joinPoint, getCache);
 
-        // then
         Assertions.assertThat(result).isEqualTo(expected);
     }
 
