@@ -10,4 +10,5 @@ public interface ProductService {
     ProductModel save(ProductModel model) throws ServiceException;
     void delete(long id) throws ServiceException;
     List<ProductModel> findByID(List<Long> ids) throws ServiceException;
+    ProductModel update(long id, ProductModel model) throws ServiceException;
 }

@@ -2,6 +2,10 @@ package ru.clevertec.test.checkapp.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.clevertec.test.checkapp.cache.DeleteCache;
+import ru.clevertec.test.checkapp.cache.GetCache;
+import ru.clevertec.test.checkapp.cache.SaveCache;
+import ru.clevertec.test.checkapp.cache.UpdateCache;
 import ru.clevertec.test.checkapp.entity.Product;
 import ru.clevertec.test.checkapp.exception.ServiceException;
 import ru.clevertec.test.checkapp.model.ProductModel;
@@ -32,11 +36,13 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @GetCache(key = "#id", returnType = ProductModel.class)
     public ProductModel findByID(long id) throws ServiceException {
         return modelMapper.toModel(repository.findById(id)
                 .orElseThrow(() -> new ServiceException(ENTITY_NOT_FOUND.toString())));
     }
     @Override
+    @SaveCache(fieldName = "id",returnType = ProductModel.class)
     public ProductModel save(ProductModel model) throws ServiceException {
         beforeSaveValidating(model);
         Product savedProduct = repository.save(modelMapper.toEntity(model));
@@ -44,6 +50,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @DeleteCache(key = "#id", returnType = ProductModel.class)
     public void delete(long id) throws ServiceException {
         if(!repository.existsById(id)) {
             throw new ServiceException(ENTITY_NOT_FOUND.toString());
@@ -57,6 +64,13 @@ public class ProductServiceImpl implements ProductService {
             throw new ServiceException(ID_LIST_IS_EMPTY.toString());
         }
         return findProducts(ids);
+    }
+
+    @Override
+    @UpdateCache(key = "#id",returnType = ProductModel.class)
+    public ProductModel update(long id, ProductModel model) throws ServiceException {
+        model.setId(id);
+        return modelMapper.toModel(repository.save(modelMapper.toEntity(model)));
     }
 
     private List<ProductModel> findProducts(List<Long> ids) throws ServiceException {

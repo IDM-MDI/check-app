@@ -1,6 +1,6 @@
 package ru.clevertec.test.checkapp.service.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.clevertec.test.checkapp.exception.ServiceException;
 import ru.clevertec.test.checkapp.model.CheckModel;
@@ -21,15 +21,10 @@ import java.util.Map;
 import java.util.Set;
 
 @Service
+@RequiredArgsConstructor
 public class CheckServiceImpl implements CheckService {
     private final ProductService productService;
     private final DiscountCardService cardService;
-
-    @Autowired
-    public CheckServiceImpl(ProductService productService, DiscountCardService cardService) {
-        this.productService = productService;
-        this.cardService = cardService;
-    }
 
     @Override
     public CheckModel getCheck(String queryString) throws ServiceException {
