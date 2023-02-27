@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -31,7 +32,11 @@ public class ProductController {
     public ProductModel save(@RequestBody ProductModel model) throws ServiceException {
         return service.save(model);
     }
-
+    @PutMapping("/{id}")
+    public ProductModel delete(@PathVariable long id,
+                               @RequestBody ProductModel model) throws ServiceException {
+        return service.update(id,model);
+    }
     @DeleteMapping("/{id}")
     public ResponseEntity<String> delete(@PathVariable long id) throws ServiceException {
         service.delete(id);

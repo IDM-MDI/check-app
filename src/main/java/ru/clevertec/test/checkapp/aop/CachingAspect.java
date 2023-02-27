@@ -48,21 +48,19 @@ public class CachingAspect {
     public Object cacheable(ProceedingJoinPoint joinPoint, DeleteCache deleteCache) throws Throwable {
         String evaluatedKey = handler.getKeyValueFromMethod(joinPoint, deleteCache.key());
         SortedSet<CacheKey> cache = handler.getClassCache(classCache, deleteCache.returnType());
-        return deleteFromCache(cache, joinPoint, evaluatedKey);
+        Optional<CacheKey> cacheObject = handler.findByKey(cache, evaluatedKey);
+        Object result = joinPoint.proceed();
+        cacheObject.ifPresent(cache::remove);
+        return result;
     }
 
     @Around("@annotation(updateCache)")
     public Object cacheable(ProceedingJoinPoint joinPoint, UpdateCache updateCache) throws Throwable {
         String evaluatedKey = handler.getKeyValueFromMethod(joinPoint, updateCache.key());
         SortedSet<CacheKey> cache = handler.getClassCache(classCache, updateCache.returnType());
-        Object result = deleteFromCache(cache, joinPoint, evaluatedKey);
-        return handler.createNewCache(cache, evaluatedKey, result);
-    }
-
-    private Object deleteFromCache(SortedSet<CacheKey> cache, ProceedingJoinPoint joinPoint, String evaluatedKey) throws Throwable {
         Optional<CacheKey> cacheObject = handler.findByKey(cache, evaluatedKey);
         Object result = joinPoint.proceed();
-        cacheObject.ifPresent(k -> handler.deleteFromCache(cache,k));
-        return result;
+        cacheObject.ifPresent(k -> k.setValue(result));
+        return handler.createNewCache(cache, evaluatedKey, result);
     }
 }

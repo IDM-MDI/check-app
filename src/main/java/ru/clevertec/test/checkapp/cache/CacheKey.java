@@ -22,17 +22,4 @@ public class CacheKey {
         hitCount++;
         lastAccessedTime = System.currentTimeMillis();
     }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        CacheKey cacheKey = (CacheKey) o;
-        return lastAccessedTime == cacheKey.lastAccessedTime && hitCount == cacheKey.hitCount && stringKey.equals(cacheKey.stringKey) && Objects.equals(value, cacheKey.value);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(stringKey, value, lastAccessedTime, hitCount);
-    }
 }

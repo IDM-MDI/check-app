@@ -26,9 +26,6 @@ public class CacheHandler {
     private Comparator<CacheKey> lruComparator = Comparator
             .comparing(CacheKey::getLastAccessedTime)
             .reversed();
-    public void deleteFromCache(SortedSet<CacheKey> cache, CacheKey cacheKey) {
-        cache.remove(cacheKey);
-    }
 
     public String getFieldValue(Object result,String field) throws NoSuchFieldException, IllegalAccessException {
         Field idField = result.getClass()
@@ -76,6 +73,7 @@ public class CacheHandler {
     }
 
     private SortedSet<CacheKey> createSortedSet(Map<Class<?>,SortedSet<CacheKey>> cache,Class<?> className) {
-        return cache.put(className,new TreeSet<>(Comparator.comparing(CacheKey::getStringKey)));
+        cache.put(className,new TreeSet<>(Comparator.comparing(CacheKey::getStringKey)));
+        return cache.get(className);
     }
 }
