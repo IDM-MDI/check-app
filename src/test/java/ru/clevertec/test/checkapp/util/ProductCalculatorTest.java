@@ -1,6 +1,7 @@
 package ru.clevertec.test.checkapp.util;
 
-import org.junit.jupiter.api.Assertions;
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.clevertec.test.checkapp.model.CheckModel;
 import ru.clevertec.test.checkapp.model.CheckProduct;
@@ -10,55 +11,59 @@ import ru.clevertec.test.checkapp.model.ProductModel;
 import java.util.Set;
 
 class ProductCalculatorTest {
-    static final ProductModel PRODUCT_MODEL = ProductModel.builder()
-            .id(1)
-            .name("test")
-            .price(1)
-            .build();
-    static final CheckModel CHECK_MODEL = CheckModel.builder()
-            .discountCard(
-                    DiscountCardModel.builder()
-                            .id(1)
-                            .number(1)
-                            .discount(1)
-                            .build()
-            )
-            .elements(Set.of(
-                    CheckProduct.builder()
-                            .product(PRODUCT_MODEL)
-                            .count(1)
-                            .totalPrice(1)
-                            .build()
-            ))
-            .totalPrice(5)
-            .totalPriceWithoutCard(5)
-            .build();
-
+    ProductModel productModel;
+    CheckModel checkModel;
+    @BeforeEach
+    void setup() {
+        productModel = ProductModel.builder()
+                .id(1)
+                .name("test")
+                .price(1)
+                .build();
+        checkModel = CheckModel.builder()
+                .discountCard(
+                        DiscountCardModel.builder()
+                                .id(1)
+                                .number(1)
+                                .discount(1)
+                                .build()
+                )
+                .elements(Set.of(
+                        CheckProduct.builder()
+                                .product(productModel)
+                                .count(1)
+                                .totalPrice(1)
+                                .build()
+                ))
+                .totalPrice(5)
+                .totalPriceWithoutCard(5)
+                .build();
+    }
     @Test
-    void calculateCertainProduct() {
+    void calculateCertainProductShouldReturnCorrectValue() {
         double expected = 5.0;
-        double actual = ProductCalculator.calculateCertainProduct(PRODUCT_MODEL, 5);
-        Assertions.assertEquals(expected,actual);
+        double actual = ProductCalculator.calculateCertainProduct(productModel, 5);
+        Assertions.assertThat(actual).isEqualTo(expected);
     }
 
     @Test
-    void calculateTotalPriceWithoutDiscount() {
+    void calculateTotalPriceWithoutDiscountShouldReturnCorrectValue() {
         double expected = 1.0;
-        double actual = ProductCalculator.calculateTotalPriceWithoutDiscount(CHECK_MODEL);
-        Assertions.assertEquals(expected,actual);
+        double actual = ProductCalculator.calculateTotalPriceWithoutDiscount(checkModel);
+        Assertions.assertThat(actual).isEqualTo(expected);
     }
 
     @Test
-    void calculateTotalPriceWithDiscount() {
+    void calculateTotalPriceWithDiscountShouldReturnCorrectValue() {
         double expected = 4.95;
-        double actual = ProductCalculator.calculateTotalPriceWithDiscount(CHECK_MODEL);
-        Assertions.assertEquals(expected,actual);
+        double actual = ProductCalculator.calculateTotalPriceWithDiscount(checkModel);
+        Assertions.assertThat(actual).isEqualTo(expected);
     }
 
     @Test
-    void calculateDiscount() {
+    void calculateDiscountShouldReturnCorrectValue() {
         double expected = 150.0;
         double actual = ProductCalculator.calculateDiscount(1000, 15);
-        Assertions.assertEquals(expected,actual);
+        Assertions.assertThat(actual).isEqualTo(expected);
     }
 }
