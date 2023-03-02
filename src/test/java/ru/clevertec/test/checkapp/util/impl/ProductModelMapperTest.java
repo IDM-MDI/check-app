@@ -1,6 +1,6 @@
 package ru.clevertec.test.checkapp.util.impl;
 
-import org.junit.jupiter.api.Assertions;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import ru.clevertec.test.checkapp.entity.Product;
 import ru.clevertec.test.checkapp.model.ProductModel;
@@ -23,47 +23,45 @@ class ProductModelMapperTest {
     @Test
     void toEntityShouldBeCorrect() {
         Product actual = PRODUCT_MODEL_MAPPER.toEntity(MODEL);
-        Assertions.assertEquals(ENTITY,actual);
+        Assertions.assertThat(actual).isEqualTo(ENTITY);
     }
 
     @Test
     void toModelShouldBeCorrect() {
         ProductModel actual = PRODUCT_MODEL_MAPPER.toModel(ENTITY);
-        Assertions.assertEquals(MODEL,actual);
+        Assertions.assertThat(actual).isEqualTo(MODEL);
     }
 
     @Test
     void toEntityListShouldBeCorrect() {
         List<Product> expected = List.of(ENTITY);
         List<Product> actual = PRODUCT_MODEL_MAPPER.toEntityList(List.of(MODEL));
-        Assertions.assertEquals(expected,actual);
+        Assertions.assertThat(actual).isEqualTo(expected);
     }
 
     @Test
     void toModelListShouldBeCorrect() {
         List<ProductModel> expected = List.of(MODEL);
         List<ProductModel> actual = PRODUCT_MODEL_MAPPER.toModelList(List.of(ENTITY));
-        Assertions.assertEquals(expected,actual);
+        Assertions.assertThat(actual).isEqualTo(expected);
     }
     @Test
     void toEntityShouldBeNull() {
-        Assertions.assertNull(PRODUCT_MODEL_MAPPER.toEntity(null));
+        Assertions.assertThat(PRODUCT_MODEL_MAPPER.toEntity(null)).isNull();
     }
 
     @Test
     void toModelShouldBeNull() {
-        Assertions.assertNull(PRODUCT_MODEL_MAPPER.toModel(null));
+        Assertions.assertThat(PRODUCT_MODEL_MAPPER.toModel(null)).isNull();
     }
 
     @Test
     void toEntityListShouldBeEmpty() {
-        Assertions.assertTrue(PRODUCT_MODEL_MAPPER.toEntityList(null)
-                .isEmpty());
+        Assertions.assertThat(PRODUCT_MODEL_MAPPER.toEntityList(null)).isEmpty();
     }
 
     @Test
     void toModelListShouldBeNull() {
-        Assertions.assertTrue(PRODUCT_MODEL_MAPPER.toModelList(null)
-                .isEmpty());
+        Assertions.assertThat(PRODUCT_MODEL_MAPPER.toModelList(null)).isEmpty();
     }
 }

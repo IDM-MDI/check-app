@@ -1,6 +1,6 @@
 package ru.clevertec.test.checkapp.util.impl;
 
-import org.junit.jupiter.api.Assertions;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import ru.clevertec.test.checkapp.entity.DiscountCard;
 import ru.clevertec.test.checkapp.model.DiscountCardModel;
@@ -22,47 +22,45 @@ class DiscountCardModelMapperTest {
     @Test
     void toEntityShouldBeCorrect() {
         DiscountCard actual = DISCOUNT_MODEL_MAPPER.toEntity(MODEL);
-        Assertions.assertEquals(ENTITY,actual);
+        Assertions.assertThat(actual).isEqualTo(ENTITY);
     }
 
     @Test
     void toModelShouldBeCorrect() {
         DiscountCardModel actual = DISCOUNT_MODEL_MAPPER.toModel(ENTITY);
-        Assertions.assertEquals(MODEL,actual);
+        Assertions.assertThat(actual).isEqualTo(MODEL);
     }
 
     @Test
     void toEntityListShouldBeCorrect() {
         List<DiscountCard> expected = List.of(ENTITY);
         List<DiscountCard> actual = DISCOUNT_MODEL_MAPPER.toEntityList(List.of(MODEL));
-        Assertions.assertEquals(expected,actual);
+        Assertions.assertThat(actual).isEqualTo(expected);
     }
 
     @Test
     void toModelListShouldBeCorrect() {
         List<DiscountCardModel> expected = List.of(MODEL);
         List<DiscountCardModel> actual = DISCOUNT_MODEL_MAPPER.toModelList(List.of(ENTITY));
-        Assertions.assertEquals(expected,actual);
+        Assertions.assertThat(actual).isEqualTo(expected);
     }
     @Test
     void toEntityShouldBeNull() {
-        Assertions.assertNull(DISCOUNT_MODEL_MAPPER.toEntity(null));
+        Assertions.assertThat(DISCOUNT_MODEL_MAPPER.toEntity(null)).isNull();
     }
 
     @Test
     void toModelShouldBeNull() {
-        Assertions.assertNull(DISCOUNT_MODEL_MAPPER.toModel(null));
+        Assertions.assertThat(DISCOUNT_MODEL_MAPPER.toModel(null)).isNull();
     }
 
     @Test
     void toEntityListShouldBeEmpty() {
-        Assertions.assertTrue(DISCOUNT_MODEL_MAPPER.toEntityList(null)
-                .isEmpty());
+        Assertions.assertThat(DISCOUNT_MODEL_MAPPER.toEntityList(null)).isEmpty();
     }
 
     @Test
     void toModelListShouldBeNull() {
-        Assertions.assertTrue(DISCOUNT_MODEL_MAPPER.toModelList(null)
-                .isEmpty());
+        Assertions.assertThat(DISCOUNT_MODEL_MAPPER.toModelList(null)).isEmpty();
     }
 }
