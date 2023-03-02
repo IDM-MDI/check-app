@@ -1,6 +1,6 @@
 package ru.clevertec.test.checkapp.validator;
 
-import org.junit.jupiter.api.Assertions;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import ru.clevertec.test.checkapp.model.ProductModel;
 
@@ -12,28 +12,28 @@ class ProductValidatorTest {
                 .name("test")
                 .price(100)
                 .build();
-        Assertions.assertTrue(ProductValidator.isProductValid(test));
+        Assertions.assertThat(ProductValidator.isProductValid(test)).isTrue();
     }
     @Test
     void isProductValidShouldBeFalse() {
-        Assertions.assertFalse(ProductValidator.isProductValid(null));
+        Assertions.assertThat(ProductValidator.isProductValid(null)).isFalse();
     }
     @Test
     void isPriceValidShouldBeTrue() {
-        Assertions.assertTrue(ProductValidator.isPriceValid(1));
+        Assertions.assertThat(ProductValidator.isPriceValid(1)).isTrue();
     }
 
     @Test
     void isPriceValidShouldBeFalse() {
-        Assertions.assertFalse(ProductValidator.isPriceValid(0));
+        Assertions.assertThat(ProductValidator.isPriceValid(0)).isFalse();
     }
     @Test
     void isNameValidShouldBeTrue() {
-        Assertions.assertTrue(ProductValidator.isNameValid("test"));
+        Assertions.assertThat(ProductValidator.isNameValid("test")).isTrue();
     }
 
     @Test
     void isNameValidShouldBeFalse() {
-        Assertions.assertFalse(ProductValidator.isNameValid(""));
+        Assertions.assertThat(ProductValidator.isNameValid("")).isFalse();
     }
 }
