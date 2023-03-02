@@ -10,12 +10,12 @@ import ru.clevertec.test.checkapp.model.ProductModel;
 import java.util.Set;
 
 class ProductCalculatorTest {
-    private static final ProductModel PRODUCT_MODEL = ProductModel.builder()
+    static final ProductModel PRODUCT_MODEL = ProductModel.builder()
             .id(1)
             .name("test")
             .price(1)
             .build();
-    private static final CheckModel CHECK_MODEL = CheckModel.builder()
+    static final CheckModel CHECK_MODEL = CheckModel.builder()
             .discountCard(
                     DiscountCardModel.builder()
                             .id(1)

@@ -15,13 +15,13 @@ import ru.clevertec.test.checkapp.util.impl.DiscountCardModelMapper;
 @ContextConfiguration(classes = RepositoryConfig.class)
 @ComponentScan(basePackages = "ru.clevertec.test")
 class DiscountCardRepositoryTest {
-    private static final DiscountCardModelMapper MODEL_MAPPER = new DiscountCardModelMapper();
-    private static final DiscountCardModel MODEL_CARD = DiscountCardModel.builder()
+    static final DiscountCardModelMapper MODEL_MAPPER = new DiscountCardModelMapper();
+    static final DiscountCardModel MODEL_CARD = DiscountCardModel.builder()
             .number(1)
             .discount(1)
             .build();
-    private static final DiscountCard ENTITY_CARD = MODEL_MAPPER.toEntity(MODEL_CARD);
-    private final DiscountCardRepository repository;
+    static final DiscountCard ENTITY_CARD = MODEL_MAPPER.toEntity(MODEL_CARD);
+    final DiscountCardRepository repository;
     @Autowired
     DiscountCardRepositoryTest(DiscountCardRepository repository) {
         this.repository = repository;

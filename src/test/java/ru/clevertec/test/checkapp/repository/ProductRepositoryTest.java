@@ -15,14 +15,14 @@ import ru.clevertec.test.checkapp.util.impl.ProductModelMapper;
 @ContextConfiguration(classes = RepositoryConfig.class)
 @ComponentScan(basePackages = "ru.clevertec.test")
 class ProductRepositoryTest {
-    private static final ProductModelMapper MODEL_MAPPER = new ProductModelMapper();
-    private static final ProductModel PRODUCT_MODEL = ProductModel.builder()
+    static final ProductModelMapper MODEL_MAPPER = new ProductModelMapper();
+    static final ProductModel PRODUCT_MODEL = ProductModel.builder()
             .name("test")
             .price(1)
             .offer(true)
             .build();
-    private static final Product PRODUCT_ENTITY = MODEL_MAPPER.toEntity(PRODUCT_MODEL);
-    private final ProductRepository repository;
+    static final Product PRODUCT_ENTITY = MODEL_MAPPER.toEntity(PRODUCT_MODEL);
+    final ProductRepository repository;
 
     @Autowired
     ProductRepositoryTest(ProductRepository repository) {

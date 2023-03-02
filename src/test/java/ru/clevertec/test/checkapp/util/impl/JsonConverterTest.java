@@ -14,7 +14,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 class JsonConverterTest {
-    private JsonConverter converter;
+    JsonConverter converter;
     @BeforeEach
     public void setup() {
         converter = new JsonConverter(new JsonSerializeHandler(),new Gson());

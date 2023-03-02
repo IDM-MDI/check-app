@@ -10,7 +10,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 class JsonSerializeHandlerTest {
-    private JsonSerializeHandler handler;
+    JsonSerializeHandler handler;
     @BeforeEach
     void setup() {
         handler = new JsonSerializeHandler();
