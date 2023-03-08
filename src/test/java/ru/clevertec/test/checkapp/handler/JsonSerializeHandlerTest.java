@@ -2,6 +2,7 @@ package ru.clevertec.test.checkapp.handler;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import ru.clevertec.test.checkapp.model.ProductModel;
 
@@ -15,69 +16,77 @@ class JsonSerializeHandlerTest {
     void setup() {
         handler = new JsonSerializeHandler();
     }
-    @Test
-    void joinToStringShouldReturnCorrectString() {
-        String expected = "hello,my name,is Test";
 
-        String result = handler.joinToString(List.of("hello", "my name", "is Test"), Object::toString);
+    @Nested
+    class JoinToString {
+        @Test
+        void joinToStringShouldReturnCorrectString() {
+            String expected = "hello,my name,is Test";
 
-        Assertions.assertThat(result).isEqualTo(expected);
+            String result = handler.joinToString(List.of("hello", "my name", "is Test"), Object::toString);
+
+            Assertions.assertThat(result).isEqualTo(expected);
+        }
+
+        @Test
+        void joinToStringShouldThrowStringIndexOutOfBoundsException() {
+            Assertions.assertThatThrownBy(() -> handler.joinToString(List.of(), Object::toString))
+                    .isInstanceOf(StringIndexOutOfBoundsException.class);
+        }
     }
+    @Nested
+    class ConvertToPrimitive {
+        @Test
+        void convertToPrimitiveShouldReturnCorrectString() {
+            String expected = "1";
 
-    @Test
-    void joinToStringShouldThrowStringIndexOutOfBoundsException() {
-        Assertions.assertThatThrownBy(() -> handler.joinToString(List.of(), Object::toString))
-                .isInstanceOf(StringIndexOutOfBoundsException.class);
+            String result = handler.convertToPrimitive(1);
+
+            Assertions.assertThat(result).isEqualTo(expected);
+        }
+
+        @Test
+        void convertToPrimitiveShouldReturnObjectString() {
+            String expected = "ProductModel(id=1, name=test, offer=true, price=1000.0)";
+
+            String result = handler.convertToPrimitive(
+                    ProductModel.builder()
+                            .id(1)
+                            .name("test")
+                            .price(1000)
+                            .offer(true)
+                            .build()
+            );
+
+            Assertions.assertThat(result).isEqualTo(expected);
+        }
     }
-
-    @Test
-    void convertToPrimitiveShouldReturnCorrectString() {
-        String expected = "1";
-
-        String result = handler.convertToPrimitive(1);
-
-        Assertions.assertThat(result).isEqualTo(expected);
-    }
-
-    @Test
-    void convertToPrimitiveShouldReturnObjectString() {
-        String expected = "ProductModel(id=1, name=test, offer=true, price=1000.0)";
-
-        String result = handler.convertToPrimitive(
-                ProductModel.builder()
-                        .id(1)
-                        .name("test")
-                        .price(1000)
-                        .offer(true)
-                        .build()
-        );
-
-        Assertions.assertThat(result).isEqualTo(expected);
-    }
-
-    @Test
-    void convertToTextShouldReturnCorrectString() {
-        String expected = "\"text\"";
+    @Nested
+    class ConvertToText {
+        @Test
+        void convertToTextShouldReturnCorrectString() {
+            String expected = "\"text\"";
 
 
-        String result = handler.convertToPrimitive("text");
+            String result = handler.convertToPrimitive("text");
 
-        Assertions.assertThat(result).isEqualTo(expected);
-    }
+            Assertions.assertThat(result).isEqualTo(expected);
+        }
 
-    @Test
-    void convertToTextShouldReturnObjectString() {
-        String expected = "\"ProductModel(id=1, name=test, offer=true, price=1000.0)\"";
+        @Test
+        void convertToTextShouldReturnObjectString() {
+            String expected = "\"ProductModel(id=1, name=test, offer=true, price=1000.0)\"";
 
-        String result = handler.convertToText(
-                ProductModel.builder()
-                        .id(1)
-                        .name("test")
-                        .price(1000)
-                        .offer(true)
-                        .build()
-        );
+            String result = handler.convertToText(
+                    ProductModel.builder()
+                            .id(1)
+                            .name("test")
+                            .price(1000)
+                            .offer(true)
+                            .build()
+            );
 
-        Assertions.assertThat(result).isEqualTo(expected);
+            Assertions.assertThat(result).isEqualTo(expected);
+        }
     }
 }

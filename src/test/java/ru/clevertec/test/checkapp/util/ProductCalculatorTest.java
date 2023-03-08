@@ -2,6 +2,7 @@ package ru.clevertec.test.checkapp.util;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import ru.clevertec.test.checkapp.model.CheckModel;
 import ru.clevertec.test.checkapp.model.CheckProduct;
@@ -39,31 +40,38 @@ class ProductCalculatorTest {
                 .totalPriceWithoutCard(5)
                 .build();
     }
-    @Test
-    void calculateCertainProductShouldReturnCorrectValue() {
-        double expected = 5.0;
-        double actual = ProductCalculator.calculateCertainProduct(productModel, 5);
-        Assertions.assertThat(actual).isEqualTo(expected);
+    @Nested
+    class CalculateCertainProduct {
+        @Test
+        void calculateCertainProductShouldReturnCorrectValue() {
+            double expected = 5.0;
+            double actual = ProductCalculator.calculateCertainProduct(productModel, 5);
+            Assertions.assertThat(actual).isEqualTo(expected);
+        }
     }
+    @Nested
+    class CalculateTotalPrice {
+        @Test
+        void calculateTotalPriceWithoutDiscountShouldReturnCorrectValue() {
+            double expected = 1.0;
+            double actual = ProductCalculator.calculateTotalPriceWithoutDiscount(checkModel);
+            Assertions.assertThat(actual).isEqualTo(expected);
+        }
 
-    @Test
-    void calculateTotalPriceWithoutDiscountShouldReturnCorrectValue() {
-        double expected = 1.0;
-        double actual = ProductCalculator.calculateTotalPriceWithoutDiscount(checkModel);
-        Assertions.assertThat(actual).isEqualTo(expected);
+        @Test
+        void calculateTotalPriceWithDiscountShouldReturnCorrectValue() {
+            double expected = 4.95;
+            double actual = ProductCalculator.calculateTotalPriceWithDiscount(checkModel);
+            Assertions.assertThat(actual).isEqualTo(expected);
+        }
     }
-
-    @Test
-    void calculateTotalPriceWithDiscountShouldReturnCorrectValue() {
-        double expected = 4.95;
-        double actual = ProductCalculator.calculateTotalPriceWithDiscount(checkModel);
-        Assertions.assertThat(actual).isEqualTo(expected);
-    }
-
-    @Test
-    void calculateDiscountShouldReturnCorrectValue() {
-        double expected = 150.0;
-        double actual = ProductCalculator.calculateDiscount(1000, 15);
-        Assertions.assertThat(actual).isEqualTo(expected);
+    @Nested
+    class CalculateDiscount {
+        @Test
+        void calculateDiscountShouldReturnCorrectValue() {
+            double expected = 150.0;
+            double actual = ProductCalculator.calculateDiscount(1000, 15);
+            Assertions.assertThat(actual).isEqualTo(expected);
+        }
     }
 }
