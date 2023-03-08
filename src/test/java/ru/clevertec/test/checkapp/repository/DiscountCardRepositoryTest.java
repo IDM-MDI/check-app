@@ -13,8 +13,6 @@ import org.springframework.test.context.ContextConfiguration;
 import ru.clevertec.test.checkapp.builder.impl.DiscountCardBuilder;
 import ru.clevertec.test.checkapp.config.RepositoryConfig;
 import ru.clevertec.test.checkapp.entity.DiscountCard;
-import ru.clevertec.test.checkapp.model.DiscountCardModel;
-import ru.clevertec.test.checkapp.util.impl.DiscountCardModelMapper;
 
 @DataJpaTest
 @ContextConfiguration(classes = RepositoryConfig.class)
