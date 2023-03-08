@@ -22,19 +22,19 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class DiscountCardServiceImplTest {
-    static final DiscountCardModelMapper modelMapper = new DiscountCardModelMapper();;
-    static final DiscountCard ENTITY_CARD = DiscountCard.builder()
+    private static final DiscountCardModelMapper modelMapper = new DiscountCardModelMapper();;
+    private static final DiscountCard ENTITY_CARD = DiscountCard.builder()
             .id(1L)
             .number(1)
             .discount(1)
             .build();
-    static final DiscountCardModel MODEL_CARD = modelMapper.toModel(ENTITY_CARD);
+    private static final DiscountCardModel MODEL_CARD = modelMapper.toModel(ENTITY_CARD);
     @Mock
-    DiscountCardRepository mockRepository;
+    private DiscountCardRepository mockRepository;
     @Mock
-    DiscountCardModelMapper mockModelMapper;
+    private DiscountCardModelMapper mockModelMapper;
     @InjectMocks
-    DiscountCardServiceImpl service;
+    private DiscountCardServiceImpl service;
 
 
     @Nested

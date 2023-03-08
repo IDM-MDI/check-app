@@ -9,13 +9,13 @@ import java.math.BigDecimal;
 import java.util.List;
 
 class ProductModelMapperTest {
-    static final ProductModelMapper PRODUCT_MODEL_MAPPER = new ProductModelMapper();
-    static final Product ENTITY = Product.builder()
+    private static final ProductModelMapper PRODUCT_MODEL_MAPPER = new ProductModelMapper();
+    private static final Product ENTITY = Product.builder()
             .id(1L)
             .name("test")
             .price(BigDecimal.valueOf(1.0))
             .build();
-    static final ProductModel MODEL = ProductModel.builder()
+    private static final ProductModel MODEL = ProductModel.builder()
             .id(1L)
             .name("test")
             .price(1.0)

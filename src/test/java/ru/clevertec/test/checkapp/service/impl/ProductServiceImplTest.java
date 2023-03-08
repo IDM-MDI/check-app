@@ -23,20 +23,20 @@ import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class ProductServiceImplTest {
-    static final ProductModelMapper modelMapper = new ProductModelMapper();
-    static final Product ENTITY_PRODUCT = Product.builder()
+    private static final ProductModelMapper modelMapper = new ProductModelMapper();
+    private static final Product ENTITY_PRODUCT = Product.builder()
             .id(1L)
             .name("test")
             .price(BigDecimal.valueOf(1))
             .isOnOffer(true)
             .build();
-    static final ProductModel MODEL_PRODUCT = modelMapper.toModel(ENTITY_PRODUCT);
+    private static final ProductModel MODEL_PRODUCT = modelMapper.toModel(ENTITY_PRODUCT);
     @Mock
-    ProductRepository mockRepository;
+    private ProductRepository mockRepository;
     @Mock
-    ProductModelMapper mockModelMapper;
+    private ProductModelMapper mockModelMapper;
     @InjectMocks
-    ProductServiceImpl service;
+    private ProductServiceImpl service;
     
     @Nested
     class FindByID {

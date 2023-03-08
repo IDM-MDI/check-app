@@ -8,13 +8,13 @@ import ru.clevertec.test.checkapp.model.DiscountCardModel;
 import java.util.List;
 
 class DiscountCardModelMapperTest {
-    static final DiscountCardModelMapper DISCOUNT_MODEL_MAPPER = new DiscountCardModelMapper();
-    static final DiscountCard ENTITY = DiscountCard.builder()
+    private static final DiscountCardModelMapper DISCOUNT_MODEL_MAPPER = new DiscountCardModelMapper();
+    private static final DiscountCard ENTITY = DiscountCard.builder()
             .id(1L)
             .number(1234)
             .discount(10)
             .build();
-    static final DiscountCardModel MODEL = DiscountCardModel.builder()
+    private static final DiscountCardModel MODEL = DiscountCardModel.builder()
             .id(1L)
             .number(1234)
             .discount(10)

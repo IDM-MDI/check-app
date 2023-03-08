@@ -11,8 +11,8 @@ import ru.clevertec.test.checkapp.model.ProductModel;
 import java.util.Set;
 
 class ProductCalculatorTest {
-    ProductModel productModel;
-    CheckModel checkModel;
+    private ProductModel productModel;
+    private CheckModel checkModel;
     @BeforeEach
     void setup() {
         productModel = ProductModel.builder()

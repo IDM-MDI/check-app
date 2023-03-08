@@ -20,20 +20,20 @@ import static org.mockito.Mockito.doReturn;
 
 @ExtendWith(MockitoExtension.class)
 class CheckServiceImplTest {
-    static final String QUERY = "id=1&id=2&id=3&card=1234";
-    static final int CARD_NUMBER = 1234;
+    private static final String QUERY = "id=1&id=2&id=3&card=1234";
+    private static final int CARD_NUMBER = 1234;
     @Mock
-    ProductServiceImpl productService;
+    private ProductServiceImpl productService;
     @Mock
-    DiscountCardServiceImpl discountCardService;
+    private DiscountCardServiceImpl discountCardService;
     @InjectMocks
-    CheckServiceImpl service;
+    private CheckServiceImpl service;
 
-    List<Long> ids;
-    List<ProductModel> products;
-    DiscountCardModel discountCard;
+    private List<Long> ids;
+    private List<ProductModel> products;
+    private DiscountCardModel discountCard;
 
-    CheckModel checkModel;
+    private CheckModel checkModel;
 
     @BeforeEach
     void setup() {

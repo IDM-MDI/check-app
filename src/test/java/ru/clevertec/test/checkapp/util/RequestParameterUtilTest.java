@@ -6,8 +6,8 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 class RequestParameterUtilTest {
-    static final String TEST_QUERY = "id=1&id=2&id=3&card=1234";
-    static final String[] TEST_ARRAY = List.of("id=1","id=2","id=3","card=1234")
+    private static final String TEST_QUERY = "id=1&id=2&id=3&card=1234";
+    private static final String[] TEST_ARRAY = List.of("id=1","id=2","id=3","card=1234")
             .toArray(new String[0]);
     @Test
     void findProductsShouldReturnCorrectValue() {
