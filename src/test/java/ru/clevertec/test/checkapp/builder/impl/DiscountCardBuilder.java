@@ -16,6 +16,7 @@ public class DiscountCardBuilder implements TestEntityBuilder<DiscountCard>, Tes
     private Long id = null;
     private int number = 1;
     private int discount = 1;
+
     @Override
     public DiscountCard buildToEntity() {
         return DiscountCard.builder()
@@ -24,7 +25,6 @@ public class DiscountCardBuilder implements TestEntityBuilder<DiscountCard>, Tes
                 .discount(discount)
                 .build();
     }
-
     @Override
     public DiscountCardModel buildToModel() {
         return DiscountCardModel.builder()

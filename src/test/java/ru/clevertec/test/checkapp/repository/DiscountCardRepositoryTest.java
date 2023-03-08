@@ -28,7 +28,7 @@ class DiscountCardRepositoryTest {
 
     @BeforeEach
     void setup() {
-        repository.save(DiscountCardBuilder.aDiscountCard().buildToEntity());
+        repository.save(ENTITY_CARD);
     }
 
     @AfterEach

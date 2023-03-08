@@ -7,6 +7,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import ru.clevertec.test.checkapp.builder.impl.DiscountCardBuilder;
 import ru.clevertec.test.checkapp.entity.DiscountCard;
 import ru.clevertec.test.checkapp.exception.ServiceException;
 import ru.clevertec.test.checkapp.model.DiscountCardModel;
@@ -22,13 +23,8 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class DiscountCardServiceImplTest {
-    private static final DiscountCardModelMapper modelMapper = new DiscountCardModelMapper();;
-    private static final DiscountCard ENTITY_CARD = DiscountCard.builder()
-            .id(1L)
-            .number(1)
-            .discount(1)
-            .build();
-    private static final DiscountCardModel MODEL_CARD = modelMapper.toModel(ENTITY_CARD);
+    private static final DiscountCard ENTITY_CARD = DiscountCardBuilder.aDiscountCard().buildToEntity();
+    private static final DiscountCardModel MODEL_CARD = DiscountCardBuilder.aDiscountCard().buildToModel();
     @Mock
     private DiscountCardRepository mockRepository;
     @Mock
@@ -41,17 +37,15 @@ class DiscountCardServiceImplTest {
     class FindByID {
         @Test
         void findByIDShouldReturnCorrectCard() throws ServiceException {
-            long id = ENTITY_CARD.getId();
-            doReturn(Optional.of(ENTITY_CARD)).when(mockRepository).findById(id);
+            doReturn(Optional.of(ENTITY_CARD)).when(mockRepository).findById(ENTITY_CARD.getId());
             doReturn(MODEL_CARD).when(mockModelMapper).toModel(ENTITY_CARD);
 
-            DiscountCardModel actual = service.findByID(id);
+            DiscountCardModel actual = service.findByID(ENTITY_CARD.getId());
             Assertions.assertThat(actual).isEqualTo(MODEL_CARD);
         }
         @Test
         void findByIDShouldThrowException() {
-            long id = ENTITY_CARD.getId();
-            Assertions.assertThatThrownBy(() -> service.findByID(id))
+            Assertions.assertThatThrownBy(() -> service.findByID(ENTITY_CARD.getId()))
                     .isInstanceOf(ServiceException.class);
         }
     }
@@ -60,12 +54,11 @@ class DiscountCardServiceImplTest {
     class FindByNumber {
         @Test
         void findByNumberShouldReturnCorrectNumber() throws ServiceException {
-            int number = ENTITY_CARD.getNumber();
-            when(mockRepository.findDiscountCardByNumber(number))
+            when(mockRepository.findDiscountCardByNumber(ENTITY_CARD.getNumber()))
                     .thenReturn(ENTITY_CARD);
             when(mockModelMapper.toModel(ENTITY_CARD))
                     .thenReturn(MODEL_CARD);
-            DiscountCardModel actual = service.findByNumber(number);
+            DiscountCardModel actual = service.findByNumber(ENTITY_CARD.getNumber());
             Assertions.assertThat(actual).isEqualTo(MODEL_CARD);
         }
         @Test
@@ -87,7 +80,9 @@ class DiscountCardServiceImplTest {
             doReturn(ENTITY_CARD).when(mockModelMapper).toEntity(MODEL_CARD);
             doReturn(ENTITY_CARD).when(mockRepository).save(ENTITY_CARD);
             doReturn(MODEL_CARD).when(mockModelMapper).toModel(ENTITY_CARD);
+
             DiscountCardModel actual = service.save(MODEL_CARD);
+
             Assertions.assertThat(actual).isEqualTo(MODEL_CARD);
         }
         @Test
@@ -100,22 +95,22 @@ class DiscountCardServiceImplTest {
     class Delete {
         @Test
         void deleteShouldBeCorrect() throws ServiceException {
-            long id = ENTITY_CARD.getId();
             doReturn(true).when(mockRepository)
-                    .existsById(id);
+                    .existsById(ENTITY_CARD.getId());
             doNothing()
                     .when(mockRepository)
-                    .deleteById(id);
-            service.delete(id);
+                    .deleteById(ENTITY_CARD.getId());
+
+            service.delete(ENTITY_CARD.getId());
+
             verify(mockRepository)
-                    .deleteById(id);
+                    .deleteById(ENTITY_CARD.getId());
         }
         @Test
         void deleteShouldThrowServiceException() {
-            long id = ENTITY_CARD.getId();
             doReturn(false).when(mockRepository)
-                    .existsById(id);
-            Assertions.assertThatThrownBy(() -> service.delete(id)).isInstanceOf(ServiceException.class);
+                    .existsById(ENTITY_CARD.getId());
+            Assertions.assertThatThrownBy(() -> service.delete(ENTITY_CARD.getId())).isInstanceOf(ServiceException.class);
         }
     }
 }

@@ -16,7 +16,7 @@ import java.math.BigDecimal;
 public class ProductBuilder implements TestEntityBuilder<Product>, TestModelBuilder<ProductModel> {
     private Long id = null;
     private String name = "testName";
-    private BigDecimal price = new BigDecimal("1");
+    private BigDecimal price = new BigDecimal(1);
     private boolean isOnOffer = true;
 
     @Override
