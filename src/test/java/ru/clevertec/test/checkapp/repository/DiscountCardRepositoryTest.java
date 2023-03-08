@@ -10,6 +10,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
+import ru.clevertec.test.checkapp.builder.impl.DiscountCardBuilder;
 import ru.clevertec.test.checkapp.config.RepositoryConfig;
 import ru.clevertec.test.checkapp.entity.DiscountCard;
 import ru.clevertec.test.checkapp.model.DiscountCardModel;
@@ -32,7 +33,7 @@ class DiscountCardRepositoryTest {
 
     @BeforeEach
     void setup() {
-        repository.save(ENTITY_CARD);
+        repository.save(DiscountCardBuilder.aDiscountCard().buildToEntity());
     }
 
     @AfterEach
