@@ -2,6 +2,7 @@ package ru.clevertec.test.checkapp.repository;
 
 import lombok.RequiredArgsConstructor;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -35,6 +36,11 @@ class DiscountCardRepositoryTest {
         repository.save(ENTITY_CARD);
     }
 
+    @AfterEach
+    void clear() {
+        repository.deleteAll();
+    }
+
     @Nested
     class ExistByCardNumber {
         @Test
@@ -50,9 +56,19 @@ class DiscountCardRepositoryTest {
                     .isFalse();
         }
     }
-    @Test
-    void findDiscountCardByNumberShouldReturnCorrectDiscount() {
-        DiscountCard actual = repository.findDiscountCardByNumber(ENTITY_CARD.getNumber());
-        Assertions.assertThat(actual.getDiscount()).isEqualTo(ENTITY_CARD.getDiscount());
+
+    @Nested
+    class FindDiscountCardByNumber {
+        @Test
+        void findDiscountCardByNumberShouldReturnCorrectDiscount() {
+            DiscountCard actual = repository.findDiscountCardByNumber(ENTITY_CARD.getNumber());
+            Assertions.assertThat(actual.getDiscount()).isEqualTo(ENTITY_CARD.getDiscount());
+        }
+
+        @Test
+        void findDiscountCardByNumberShouldReturnNull() {
+            DiscountCard actual = repository.findDiscountCardByNumber(0);
+            Assertions.assertThat(actual).isNull();
+        }
     }
 }
