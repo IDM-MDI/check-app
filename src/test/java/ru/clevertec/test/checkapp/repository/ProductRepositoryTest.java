@@ -11,6 +11,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
+import ru.clevertec.test.checkapp.builder.impl.ProductBuilder;
 import ru.clevertec.test.checkapp.config.RepositoryConfig;
 import ru.clevertec.test.checkapp.entity.Product;
 import ru.clevertec.test.checkapp.model.ProductModel;
@@ -22,13 +23,7 @@ import ru.clevertec.test.checkapp.util.impl.ProductModelMapper;
 @ActiveProfiles("test")
 @RequiredArgsConstructor
 class ProductRepositoryTest {
-    private static final ProductModelMapper MODEL_MAPPER = new ProductModelMapper();
-    private static final ProductModel PRODUCT_MODEL = ProductModel.builder()
-            .name("test")
-            .price(1)
-            .offer(true)
-            .build();
-    private static final Product PRODUCT_ENTITY = MODEL_MAPPER.toEntity(PRODUCT_MODEL);
+    private static final Product PRODUCT_ENTITY = ProductBuilder.aProduct().buildToEntity();
     @Autowired
     private ProductRepository repository;
 

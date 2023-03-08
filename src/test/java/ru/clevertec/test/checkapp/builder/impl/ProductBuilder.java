@@ -13,7 +13,7 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @NoArgsConstructor(staticName = "aProduct")
 @With
-public class ProductEntityBuilder implements TestEntityBuilder<Product>, TestModelBuilder<ProductModel> {
+public class ProductBuilder implements TestEntityBuilder<Product>, TestModelBuilder<ProductModel> {
     private Long id = null;
     private String name = "testName";
     private BigDecimal price = new BigDecimal("1");
