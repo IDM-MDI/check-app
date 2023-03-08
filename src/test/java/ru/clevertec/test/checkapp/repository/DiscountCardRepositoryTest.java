@@ -21,12 +21,7 @@ import ru.clevertec.test.checkapp.util.impl.DiscountCardModelMapper;
 @ComponentScan(basePackages = "ru.clevertec.test")
 @ActiveProfiles("test")
 class DiscountCardRepositoryTest {
-    private static final DiscountCardModelMapper MODEL_MAPPER = new DiscountCardModelMapper();
-    private static final DiscountCardModel MODEL_CARD = DiscountCardModel.builder()
-            .number(1)
-            .discount(1)
-            .build();
-    private static final DiscountCard ENTITY_CARD = MODEL_MAPPER.toEntity(MODEL_CARD);
+    private static final DiscountCard ENTITY_CARD = DiscountCardBuilder.aDiscountCard().buildToEntity();
     @Autowired
     private DiscountCardRepository repository;
 
