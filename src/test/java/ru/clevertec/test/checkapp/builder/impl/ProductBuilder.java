@@ -1,14 +1,13 @@
 package ru.clevertec.test.checkapp.builder.impl;
 
-import lombok.With;
 import ru.clevertec.test.checkapp.builder.TestEntityBuilder;
 import ru.clevertec.test.checkapp.builder.TestModelBuilder;
 import ru.clevertec.test.checkapp.entity.Product;
 import ru.clevertec.test.checkapp.model.ProductModel;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 
-@With
 public class ProductBuilder implements TestEntityBuilder<Product>, TestModelBuilder<ProductModel> {
     private Long id = null;
     private String name = "testName";
@@ -41,11 +40,28 @@ public class ProductBuilder implements TestEntityBuilder<Product>, TestModelBuil
 
     @Override
     public ProductModel buildToModel() {
+        long id = (this.id == null) ? 0 : this.id;
         return ProductModel.builder()
                 .id(id)
                 .name(name)
                 .price(price.doubleValue())
                 .offer(isOnOffer)
                 .build();
+    }
+
+    public ProductBuilder withId(Long id) {
+        return Objects.equals(this.id, id) ? this : new ProductBuilder(id, this.name, this.price, this.isOnOffer);
+    }
+
+    public ProductBuilder withName(String name) {
+        return Objects.equals(this.name, name) ? this : new ProductBuilder(this.id, name, this.price, this.isOnOffer);
+    }
+
+    public ProductBuilder withPrice(BigDecimal price) {
+        return Objects.equals(this.price, price) ? this : new ProductBuilder(this.id, this.name, price, this.isOnOffer);
+    }
+
+    public ProductBuilder withOnOffer(boolean isOnOffer) {
+        return this.isOnOffer == isOnOffer ? this : new ProductBuilder(this.id, this.name, this.price, isOnOffer);
     }
 }

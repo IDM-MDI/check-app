@@ -42,26 +42,25 @@ class ProductServiceImplTest {
     class FindByID {
         @Test
         void findByIDShouldReturnCorrectValue() throws ServiceException {
-            long id = ENTITY_PRODUCT.getId();
-            doReturn(Optional.of(ENTITY_PRODUCT)).when(mockRepository).findById(id);
+            doReturn(Optional.of(ENTITY_PRODUCT)).when(mockRepository).findById(ENTITY_PRODUCT.getId());
             doReturn(MODEL_PRODUCT).when(mockModelMapper).toModel(ENTITY_PRODUCT);
-            ProductModel actual = service.findByID(id);
+
+            ProductModel actual = service.findByID(ENTITY_PRODUCT.getId());
+
             Assertions.assertThat(actual).isEqualTo(MODEL_PRODUCT);
         }
         @Test
         void findByIDShouldThrowServiceException() {
-            long id = ENTITY_PRODUCT.getId();
-            Assertions.assertThatThrownBy(() -> service.findByID(id))
+            Assertions.assertThatThrownBy(() -> service.findByID(ENTITY_PRODUCT.getId()))
                     .isInstanceOf(ServiceException.class);
         }
 
         @Test
         void findByIDListShouldReturnCorrectValue() throws ServiceException {
-            long id = ENTITY_PRODUCT.getId();
-            List<Long> longs = List.of(id);
+            List<Long> longs = List.of(ENTITY_PRODUCT.getId());
             List<ProductModel> expected = List.of(MODEL_PRODUCT);
 
-            doReturn(Optional.of(ENTITY_PRODUCT)).when(mockRepository).findById(id);
+            doReturn(Optional.of(ENTITY_PRODUCT)).when(mockRepository).findById(ENTITY_PRODUCT.getId());
             doReturn(MODEL_PRODUCT).when(mockModelMapper).toModel(ENTITY_PRODUCT);
 
             List<ProductModel> actual = service.findByID(longs);
@@ -75,7 +74,9 @@ class ProductServiceImplTest {
             doReturn(ENTITY_PRODUCT).when(mockModelMapper).toEntity(MODEL_PRODUCT);
             doReturn(ENTITY_PRODUCT).when(mockRepository).save(ENTITY_PRODUCT);
             doReturn(MODEL_PRODUCT).when(mockModelMapper).toModel(ENTITY_PRODUCT);
+
             ProductModel actual = service.save(MODEL_PRODUCT);
+
             Assertions.assertThat(actual).isEqualTo(MODEL_PRODUCT);
         }
         @Test
@@ -88,20 +89,20 @@ class ProductServiceImplTest {
     class Delete {
         @Test
         void deleteShouldReturnCorrectValue() throws ServiceException {
-            long id = ENTITY_PRODUCT.getId();
-            doReturn(true).when(mockRepository).existsById(id);
+            doReturn(true).when(mockRepository).existsById(ENTITY_PRODUCT.getId());
             doNothing()
                     .when(mockRepository)
-                    .deleteById(id);
-            service.delete(id);
+                    .deleteById(ENTITY_PRODUCT.getId());
+
+            service.delete(ENTITY_PRODUCT.getId());
+
             verify(mockRepository)
-                    .deleteById(id);
+                    .deleteById(ENTITY_PRODUCT.getId());
         }
         @Test
         void deleteShouldThrowServiceException() {
-            long id = ENTITY_PRODUCT.getId();
-            doReturn(false).when(mockRepository).existsById(id);
-            Assertions.assertThatThrownBy(() -> service.delete(id))
+            doReturn(false).when(mockRepository).existsById(ENTITY_PRODUCT.getId());
+            Assertions.assertThatThrownBy(() -> service.delete(ENTITY_PRODUCT.getId()))
                     .isInstanceOf(ServiceException.class);
         }
     }

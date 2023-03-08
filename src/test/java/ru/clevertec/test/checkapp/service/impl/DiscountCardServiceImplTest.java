@@ -7,7 +7,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import ru.clevertec.test.checkapp.builder.impl.DiscountCardBuilder;
 import ru.clevertec.test.checkapp.entity.DiscountCard;
 import ru.clevertec.test.checkapp.exception.ServiceException;
 import ru.clevertec.test.checkapp.model.DiscountCardModel;
@@ -19,12 +18,16 @@ import java.util.Optional;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static ru.clevertec.test.checkapp.builder.impl.DiscountCardBuilder.aDiscountCard;
 
 @ExtendWith(MockitoExtension.class)
 class DiscountCardServiceImplTest {
-    private static final DiscountCard ENTITY_CARD = DiscountCardBuilder.aDiscountCard().buildToEntity();
-    private static final DiscountCardModel MODEL_CARD = DiscountCardBuilder.aDiscountCard().buildToModel();
+    private static final DiscountCard ENTITY_CARD = aDiscountCard()
+            .withId(1L)
+            .buildToEntity();
+    private static final DiscountCardModel MODEL_CARD = aDiscountCard()
+            .withId(1L)
+            .buildToModel();
     @Mock
     private DiscountCardRepository mockRepository;
     @Mock
@@ -41,6 +44,7 @@ class DiscountCardServiceImplTest {
             doReturn(MODEL_CARD).when(mockModelMapper).toModel(ENTITY_CARD);
 
             DiscountCardModel actual = service.findByID(ENTITY_CARD.getId());
+
             Assertions.assertThat(actual).isEqualTo(MODEL_CARD);
         }
         @Test
@@ -54,11 +58,11 @@ class DiscountCardServiceImplTest {
     class FindByNumber {
         @Test
         void findByNumberShouldReturnCorrectNumber() throws ServiceException {
-            when(mockRepository.findDiscountCardByNumber(ENTITY_CARD.getNumber()))
-                    .thenReturn(ENTITY_CARD);
-            when(mockModelMapper.toModel(ENTITY_CARD))
-                    .thenReturn(MODEL_CARD);
+            doReturn(ENTITY_CARD).when(mockRepository).findDiscountCardByNumber(ENTITY_CARD.getNumber());
+            doReturn(MODEL_CARD).when(mockModelMapper).toModel(ENTITY_CARD);
+
             DiscountCardModel actual = service.findByNumber(ENTITY_CARD.getNumber());
+
             Assertions.assertThat(actual).isEqualTo(MODEL_CARD);
         }
         @Test

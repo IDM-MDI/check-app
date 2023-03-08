@@ -4,13 +4,21 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import ru.clevertec.test.checkapp.entity.Product;
 import ru.clevertec.test.checkapp.model.ProductModel;
 
+import java.math.BigDecimal;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static ru.clevertec.test.checkapp.builder.impl.ProductBuilder.aProduct;
 
 class JsonSerializeHandlerTest {
+    private static final ProductModel MODEL = aProduct()
+            .withId(1L)
+            .withName("test")
+            .withPrice(new BigDecimal(1000))
+            .withOnOffer(true)
+            .buildToModel();
     private JsonSerializeHandler handler;
     @BeforeEach
     void setup() {
@@ -49,14 +57,7 @@ class JsonSerializeHandlerTest {
         void convertToPrimitiveShouldReturnObjectString() {
             String expected = "ProductModel(id=1, name=test, offer=true, price=1000.0)";
 
-            String result = handler.convertToPrimitive(
-                    ProductModel.builder()
-                            .id(1)
-                            .name("test")
-                            .price(1000)
-                            .offer(true)
-                            .build()
-            );
+            String result = handler.convertToPrimitive(MODEL);
 
             Assertions.assertThat(result).isEqualTo(expected);
         }
@@ -77,14 +78,7 @@ class JsonSerializeHandlerTest {
         void convertToTextShouldReturnObjectString() {
             String expected = "\"ProductModel(id=1, name=test, offer=true, price=1000.0)\"";
 
-            String result = handler.convertToText(
-                    ProductModel.builder()
-                            .id(1)
-                            .name("test")
-                            .price(1000)
-                            .offer(true)
-                            .build()
-            );
+            String result = handler.convertToText(MODEL);
 
             Assertions.assertThat(result).isEqualTo(expected);
         }

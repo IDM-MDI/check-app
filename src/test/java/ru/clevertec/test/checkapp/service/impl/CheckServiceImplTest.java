@@ -7,16 +7,21 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import ru.clevertec.test.checkapp.builder.impl.DiscountCardBuilder;
+import ru.clevertec.test.checkapp.builder.impl.ProductBuilder;
 import ru.clevertec.test.checkapp.exception.ServiceException;
 import ru.clevertec.test.checkapp.model.CheckModel;
-import ru.clevertec.test.checkapp.model.CheckProduct;
 import ru.clevertec.test.checkapp.model.DiscountCardModel;
 import ru.clevertec.test.checkapp.model.ProductModel;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Set;
 
 import static org.mockito.Mockito.doReturn;
+import static ru.clevertec.test.checkapp.builder.impl.CheckBuilder.aCheck;
+import static ru.clevertec.test.checkapp.builder.impl.CheckProductBuilder.aCheckProduct;
+import static ru.clevertec.test.checkapp.builder.impl.ProductBuilder.aProduct;
 
 @ExtendWith(MockitoExtension.class)
 class CheckServiceImplTest {
@@ -29,7 +34,7 @@ class CheckServiceImplTest {
     @InjectMocks
     private CheckServiceImpl service;
 
-    private List<Long> ids;
+    private static final List<Long> IDS = List.of(1L,2L,3L);
     private List<ProductModel> products;
     private DiscountCardModel discountCard;
 
@@ -37,43 +42,41 @@ class CheckServiceImplTest {
 
     @BeforeEach
     void setup() {
-        ids = List.of(1L,2L,3L);
         products = List.of(
-                ProductModel.builder().id(1).name("test1").price(1).build(),
-                ProductModel.builder().id(2).name("test2").price(2).build(),
-                ProductModel.builder().id(3).name("test3").price(3).build()
+                aProduct()
+                        .withId(1L)
+                        .withPrice(new BigDecimal(1))
+                        .withOnOffer(false)
+                        .buildToModel(),
+                aProduct()
+                        .withId(2L)
+                        .withPrice(new BigDecimal(2))
+                        .withOnOffer(false)
+                        .buildToModel(),
+                aProduct()
+                        .withId(3L)
+                        .withPrice(new BigDecimal(3))
+                        .withOnOffer(false)
+                        .buildToModel()
         );
-        discountCard = DiscountCardModel.builder()
-                .number(1234)
-                .discount(15)
-                .build();
+        discountCard = DiscountCardBuilder.aDiscountCard()
+                .withDiscount(1234)
+                .withDiscount(15)
+                .buildToModel();
 
-        checkModel = CheckModel.builder()
-                .elements(Set.of(
-                        CheckProduct.builder()
-                                .product(products.get(0))
-                                .count(1)
-                                .totalPrice(1)
-                                .build(),
-                        CheckProduct.builder()
-                                .product(products.get(1))
-                                .count(1)
-                                .totalPrice(2)
-                                .build(),
-                        CheckProduct.builder()
-                                .product(products.get(2))
-                                .count(1)
-                                .totalPrice(3)
-                                .build()
-                ))
-                .discountCard(discountCard)
-                .totalPrice(5.1)
-                .totalPriceWithoutCard(6.0)
-                .build();
+        checkModel = aCheck()
+                .withElements(Set.of(
+                        aCheckProduct().withProduct(products.get(0)).withTotalPrice(1).buildToModel(),
+                        aCheckProduct().withProduct(products.get(1)).withTotalPrice(2).buildToModel(),
+                        aCheckProduct().withProduct(products.get(2)).withTotalPrice(3).buildToModel()))
+                .withDiscountCard(discountCard)
+                .withTotalPrice(5.1)
+                .withTotalPriceWithoutCard(6.0)
+                .buildToModel();
     }
     @Test
     void getCheckShouldReturnCorrectCheck() throws ServiceException {
-        doReturn(products).when(productService).findByID(ids);
+        doReturn(products).when(productService).findByID(IDS);
         doReturn(discountCard).when(discountCardService).findByNumber(CARD_NUMBER);
 
         CheckModel actual = service.getCheck(QUERY);
